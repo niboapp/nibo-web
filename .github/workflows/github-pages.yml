@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '20'
       - name: Install dependencies
         run: npm install
       - name: Build
@@ -22,7 +22,7 @@ jobs:
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.DEPLOY_TOKEN }}
+          personal_token: ${{ secrets.DEPLOY_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
 
