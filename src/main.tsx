@@ -17,6 +17,7 @@ import { CartProvider } from "./context/CartContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Product from "./pages/Product";
 import { ProductDetails } from "./components/ProductDetails";
+import ErrorPage from "./pages/ErrorPage";
 
 // Define routes using createBrowserRouter
 
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />, // Layout with Outlet for nested routes
-    errorElement: <div>This page doesn't exist 😭😭</div>,
+    errorElement: <ErrorPage />,
     children: [
       { path: "", element: <HomePage products={products} /> },
       { path: "categories", element: <Categories products={products} /> },
