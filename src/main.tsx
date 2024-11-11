@@ -28,10 +28,13 @@ const router = createBrowserRouter([
     element: <Layout />, // Layout with Outlet for nested routes
     errorElement: <ErrorPage />,
     children: [
-      { path: '', element: <HomePage products={products} /> },
-      { path: 'categories', element: <Categories products={products} /> },
-      { path: 'account', element: <Account /> },
-      { path: 'help', element: <Help /> },
+      { path: '/nibo-web/', element: <HomePage products={products} /> },
+      {
+        path: '/nibo-web/categories',
+        element: <Categories products={products} />,
+      },
+      { path: '/nibo-web/account', element: <Account /> },
+      { path: '/nibo-web/help', element: <Help /> },
     ],
   },
   { path: 'cart', element: <Cart /> },
