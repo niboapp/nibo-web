@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-const base = './';
+const base = process.env.NODE_ENV === 'production' ? '/nibo-web/' : '/';
 
 export default defineConfig({
   plugins: [react()],
