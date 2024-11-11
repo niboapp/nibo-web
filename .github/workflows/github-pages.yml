@@ -1,10 +1,9 @@
 name: Nibo's Landing Page
 run-name: Deploy to GitHub Pages
 on:
-  [push]
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
