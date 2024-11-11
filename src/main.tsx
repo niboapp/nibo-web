@@ -25,7 +25,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />, // Layout with Outlet for nested routes
-    errorElement: <div>This page doesn't exist😭😭</div>,
+    errorElement: <div>This page doesn't exist 😭😭</div>,
     children: [
       { path: "", element: <HomePage products={products} /> },
       { path: "categories", element: <Categories products={products} /> },
@@ -40,14 +40,16 @@ const router = createBrowserRouter([
   },
   {
     path: "/productdetail/:id",
-    element: <ProductDetails />
+    element: <ProductDetails />,
   },
   {
     path: "/store/:storeName",
     element: <StoreDetails />,
   },
-  { path: "stores",
-    element: <StoresPage /> },
+  {
+    path: "stores",
+    element: <StoresPage />,
+  },
 ]);
 
 // Render the RouterProvider
