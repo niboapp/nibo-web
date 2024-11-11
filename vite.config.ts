@@ -1,14 +1,25 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
+const base = process.env.NODE_ENV === 'production' ? '/nibo-web/' : '/';
+
 export default defineConfig({
   plugins: [react()],
-  base: '/nibo-web/',
+  base,
   build: {
+    cssCodeSplit: true,
+    cssMinify: true,
     outDir: 'dist',
     emptyOutDir: true,
     minify: 'terser',
-    sourcemap: true,
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+        assetFileNames: 'assets/[name].[hash][extname]',
+        chunkFileNames: 'assets/[name].[hash].js',
+        entryFileNames: 'assets/[name].[hash].js',
+      },
+    },
   },
 });
