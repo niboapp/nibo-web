@@ -24,17 +24,14 @@ import ErrorPage from './pages/ErrorPage';
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
-    path: '/nibo-web/',
+    path: '/',
     element: <Layout />, // Layout with Outlet for nested routes
     errorElement: <ErrorPage />,
     children: [
-      { path: '/nibo-web/', element: <HomePage products={products} /> },
-      {
-        path: '/nibo-web/categories',
-        element: <Categories products={products} />,
-      },
-      { path: '/nibo-web/account', element: <Account /> },
-      { path: '/nibo-web/help', element: <Help /> },
+      { path: '', element: <HomePage products={products} /> },
+      { path: 'categories', element: <Categories products={products} /> },
+      { path: 'account', element: <Account /> },
+      { path: 'help', element: <Help /> },
     ],
   },
   { path: 'cart', element: <Cart /> },
