@@ -4,6 +4,7 @@ import Product from '../types/product';
 import { ProductCard } from '../components/ProductCard';
 import products from '../data/products';
 import Store from '../types/stores';
+import ShoppingCart from '../components/ui/ShoppingCart';
 
 export const StoreDetails: React.FC = () => {
   const { storeName } = useParams<{ storeName: string }>();
@@ -36,20 +37,16 @@ export const StoreDetails: React.FC = () => {
   if (!storeData) return <div>Loading...</div>;
 
   return (
-    <div className="max-w-md mx-auto bg-white min-h-screen">
+    <div className="max-w-md mx-auto bg-white min-h-screen ">
       {/* Header */}
-      <div className="p-4 flex items-center justify-between border-b">
+      <div className="p-4  justify-between sticky top-0 flex items-center px-4 py-3 bg-white border-b z-50">
         <Link to="/stores" className="text-gray-600">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
         </Link>
         <h1 className="text-lg font-medium text-gray-800">{storeData.name}</h1>
-        <button className="text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-          </svg>
-        </button>
+        <ShoppingCart />
       </div>
 
       {/* Store Information */}

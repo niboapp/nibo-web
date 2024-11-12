@@ -1,92 +1,63 @@
-import { useState, useMemo } from "react";
-import { ProductCard } from "../components/ProductCard";
-import Product from "../types/product";
-import Button from "../components/ui/Button";
-import { useSearch } from "../context/SearchContext";
+import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { Package, Shirt, Tv } from 'lucide-react';
+import  Product  from '../types/product';
+import { BottomNav } from '../components/Layout';
+import LeftArrow from '../components/ui/LeftArrow';
+import ShoppingCart from '../components/ui/ShoppingCart';
 
 interface CategoriesPageProps {
-    products: Product[];
-  }
-  
-  export const Categories: React.FC<CategoriesPageProps> = ({ products }) => {
-    const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all');
-    const {searchTerm} = useSearch()
-    // Extract unique categories from products
-    const categories = useMemo(() => {
-      const uniqueCategories = new Set(products.map(product => product.category));
-      return Array.from(uniqueCategories);
-    }, [products]);
-  
-    // Filter products based on category and search query
-    const filteredProducts = useMemo(() => {
-      return products.filter((product) => {
-        const matchesCategory = 
-          selectedCategory === 'all' || 
-          product.category === selectedCategory;
-        
-        const matchesSearch = 
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchTerm.toLowerCase());
-  
-        return matchesCategory && matchesSearch;
-      });
-    }, [products, selectedCategory, searchTerm]);
-  
-    const handleViewDetails = (productId: string) => {
-      // Handle navigation or modal open
-      console.log(`Viewing product: ${productId}`);
-    };
-  
-    return (
-      <div className="container mx-auto px-4 py-8">
-        {/* Category Filter and Search */}
-        <div className="mb-8 space-y-4 md:flex md:items-center md:justify-between md:space-y-0">
-          <div className="flex flex-wrap gap-2">
-            <Button
-              className={`rounded-md px-4 py-2 text-sm font-medium ${
-                selectedCategory === 'all'
-                  && 'bg-bg-primary text-pink-500'
-                  
-              }`}
-              onClick={() => setSelectedCategory('all')}
-            >
-              All
-            </Button>
-            {categories.map((category) => (
-              <Button
-                key={category}
-                className={`rounded-md px-4 py-2 text-sm font-medium ${
-                  selectedCategory === category
-                    ? 'bg-bg-primary text-pink-500'
-                    : ' hover:bg-gray-200'
-                }`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
-        </div>
-  
-        {/* Products Grid */}
-        <div className=" grid grid-cols-3 gap-4">
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onViewDetails={handleViewDetails}
-            />
-          ))}
-        </div>
-  
-        {/* No Results Message */}
-        {filteredProducts.length === 0 && (
-          <div className="mt-8 text-center text-gray-500">
-            No products found matching your criteria.
-          </div>
-        )}
-      </div>
-    );
-  };
+  products: Product[];
+}
 
-  export default Categories
+const getCategoryIcon = (category: string) => {
+  switch (category.toLowerCase()) {
+    case 'health':
+      return <Package className="w-8 h-8 text-gray-600" />;
+    case 'fashion':
+      return <Shirt className="w-8 h-8 text-gray-600" />;
+    case 'electronics':
+      return <Tv className="w-8 h-8 text-gray-600" />;
+    default:
+      return <Package className="w-8 h-8 text-gray-600" />;
+  }
+};
+
+export const Categories: React.FC<CategoriesPageProps> = ({ products }) => {
+  // Extract unique categories from products
+  const categories = useMemo(() => {
+    const uniqueCategories = new Set(products.map(product => product.category));
+    return Array.from(uniqueCategories);
+  }, [products]);
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="flex items-center p-4 border-b">
+        <Link to="/" className="text-gray-600">
+          <LeftArrow />
+        </Link>
+        <h1 className="flex-1 text-center text-lg font-medium mr-6">Categories</h1>
+        <ShoppingCart />
+      </div>
+
+      {/* Categories Grid */}
+      <div className="grid grid-cols-2 gap-4 p-4">
+        {categories.map((category) => (
+          <Link
+            key={category}
+            to={`/categories/${category.toLowerCase()}`}
+            className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-sm"
+          >
+            <div className="mb-2">{getCategoryIcon(category)}</div>
+            <span className="text-sm text-gray-700">{category}</span>
+          </Link>
+        ))}
+      </div>
+      {/*Bottom Nav*/}
+      <BottomNav />
+    </div>
+  );
+};
+
+export default Categories;

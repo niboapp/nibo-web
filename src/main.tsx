@@ -18,6 +18,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Product from './pages/Product';
 import { ProductDetails } from './components/ProductDetails';
 import ErrorPage from './pages/ErrorPage';
+import ProductList from './pages/ProductList';
 
 // Define routes using createBrowserRouter
 
@@ -29,7 +30,6 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: '', element: <HomePage products={products} /> },
-      { path: 'categories', element: <Categories products={products} /> },
       { path: 'account', element: <Account /> },
       { path: 'help', element: <Help /> },
     ],
@@ -39,6 +39,7 @@ const router = createBrowserRouter([
     path: '/product/:id',
     element: <Product />,
   },
+  { path: 'categories', element: <Categories products={products} /> },
   {
     path: '/productdetail/:id',
     element: <ProductDetails />,
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
     element: <StoreDetails />,
   },
   { path: 'stores', element: <StoresPage /> },
+  {path: '/categories/:category', element: <ProductList products={products} /> }
 ]);
 
 // Render the RouterProvider

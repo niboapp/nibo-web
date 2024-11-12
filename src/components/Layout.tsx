@@ -37,7 +37,15 @@ export default function Layout() {
       </main>
 
       {/* Bottom Navbar */}
-      <nav className="fixed bottom-0 left-0 right-0 flex justify-around bg-bg-primary text-gray-900 py-2">
+      <BottomNav />
+    </div>
+  );
+}
+
+
+export const BottomNav = () => {
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 flex justify-around bg-bg-primary text-gray-900 py-2">
         <NavLink
           to="/"
           className={({ isActive }) => isActive ? "flex flex-col items-center text-bg-active" : "flex flex-col items-center hover:text-bg-active"}
@@ -78,6 +86,5 @@ export default function Layout() {
           <span className="text-xs">Help</span>
         </NavLink>
       </nav>
-    </div>
-  );
+  )
 }
