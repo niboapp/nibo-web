@@ -57,30 +57,52 @@ const StoresPage: React.FC = () => {
   const stores = getUniqueStores();
 
   return (
-    <div className="max-w-md mx-auto min-h-screen bg-white">
+    <div className="max-w-md mx-auto sm:max-w-2xl md:max-w-3xl min-h-screen bg-white">
       {/* Header */}
       <div className="p-4 flex items-center justify-between border-b">
         <Link to="/" className="text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
         </Link>
         <h1 className="text-lg font-medium">Stores</h1>
         <button className="text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+            />
           </svg>
         </button>
       </div>
 
       {/* Stores Grid */}
-      <div className="p-4 grid grid-cols-2 gap-4">
+      <div className="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {stores.length > 0 ? (
           stores.map((store) => (
             <StoreCard key={store.name} store={store} />
           ))
         ) : (
-          <div className="text-center py-12 col-span-2">
+          <div className="text-center py-12 col-span-2 sm:col-span-3 md:col-span-4">
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               No stores found
             </h3>
