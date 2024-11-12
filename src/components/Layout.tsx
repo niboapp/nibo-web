@@ -45,7 +45,7 @@ export default function Layout() {
 
 export const BottomNav = () => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 flex justify-around bg-bg-primary text-gray-900 py-2">
+    <nav className="fixed bottom-0 left-0 right-0 flex justify-around bg-bg-primary text-gray-900 py-2 z-50">
         <NavLink
           to="/"
           className={({ isActive }) => isActive ? "flex flex-col items-center text-bg-active" : "flex flex-col items-center hover:text-bg-active"}
