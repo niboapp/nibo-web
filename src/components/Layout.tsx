@@ -1,9 +1,16 @@
 import { FaShoppingCart, FaSearch, FaHome, FaList, FaStore, FaUser, FaQuestionCircle } from 'react-icons/fa';
 import { Outlet, NavLink } from 'react-router-dom';
 import { useSearch } from '../context/SearchContext';
-
+import { useEffect } from 'react';
+import TagManager from "react-gtm-module"
 export default function Layout() {
   const {searchTerm, setSearchTerm} = useSearch()
+  useEffect(() => {
+    const tagManagerArgs = {
+        gtmId: 'GTM-WBKH9CX2'
+    };
+    TagManager.initialize(tagManagerArgs);
+}, []);
   return (
     <div className="flex flex-col min-h-screen bg-white text-gray-900">
       {/* Top Navbar */}

@@ -14,7 +14,6 @@ export default function ProductPage() {
     latitude: 0,
     longitude: 0,
   });
-
   useEffect(() => {
     const prod = products.find((product) => product.id === id) || null;
     setProduct(prod);
@@ -41,7 +40,7 @@ export default function ProductPage() {
         }
       );
     }
-  }, []);
+  }, [])
 
   return (
     <div className="flex flex-col h-screen bg-white">
