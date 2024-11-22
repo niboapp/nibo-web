@@ -76,9 +76,9 @@ export const BottomNav = () => {
           <FaStore className="text-lg" />
           <span className="text-xs">Stores</span>
         </NavLink>
-
+        {/*Change this to a Protected route in the code*/}
         <NavLink
-          to="/account"
+          to="/login"
           className={({ isActive }) => isActive ? "flex flex-col items-center text-bg-active" : "flex flex-col items-center hover:text-bg-active"}
         >
           <FaUser className="text-lg" />

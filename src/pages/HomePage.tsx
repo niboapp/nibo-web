@@ -18,6 +18,7 @@ interface Brand {
   alt: string;
 }
 
+
 const healthBrands: Brand[] = [
   { src: Brand1, alt: "Niropharm" },
   { src: Brand2, alt: "Osworth" },
@@ -67,6 +68,7 @@ export const HomePage: React.FC<HomePageProps> = ({ products }) => {
     // Handle navigation
     console.log(`Viewing product: ${productId}`);
   };
+  
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -94,7 +96,7 @@ export const HomePage: React.FC<HomePageProps> = ({ products }) => {
         </div>
         <div className="grid grid-cols-3 gap-4">
           {products
-            .slice(0, 3)
+            .slice(4, 7)
             .filter((product) =>
               product?.name.toLowerCase().includes(searchTerm.toLowerCase())
             )

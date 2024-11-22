@@ -1,6 +1,6 @@
 import { PlusIcon, UploadIcon, XIcon } from "lucide-react";
 import { useState, ChangeEvent, FormEvent } from "react";
-import { toast, Toaster } from "sonner";
+import { toast, Toaster} from "sonner";
 
 interface ProductFormData {
   name: string;
@@ -13,7 +13,7 @@ interface AddProductModalProps {
   onClose: () => void;
 }
 
-function AddProductModal({ onClose }: AddProductModalProps) {
+export function AddProductModal({ onClose }: AddProductModalProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [formData, setFormData] = useState<ProductFormData>({
     name: "",
@@ -69,7 +69,7 @@ function AddProductModal({ onClose }: AddProductModalProps) {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
               placeholder="Enter product name"
             />
           </div>
@@ -103,7 +103,7 @@ function AddProductModal({ onClose }: AddProductModalProps) {
                     <UploadIcon className="h-10 w-10 text-gray-400" />
                   </div>
                   <div className="flex text-sm text-gray-600">
-                    <label className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500">
+                    <label className="relative cursor-pointer rounded-md font-medium text-pink-600 hover:text-pink-500">
                       <span>Upload a file</span>
                       <input
                         type="file"
@@ -131,7 +131,7 @@ function AddProductModal({ onClose }: AddProductModalProps) {
               name="locations"
               value={formData.locations}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
               placeholder="Enter store locations"
             />
           </div>
@@ -144,7 +144,7 @@ function AddProductModal({ onClose }: AddProductModalProps) {
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 min-h-[100px]"
               placeholder="Describe your product"
             />
           </div>
@@ -160,7 +160,7 @@ function AddProductModal({ onClose }: AddProductModalProps) {
             <Toaster />
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-500"
               onClick={() => {
                 toast("Product has been added successfully");
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
