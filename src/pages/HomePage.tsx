@@ -1,5 +1,5 @@
 import { ProductCard } from "../components/ProductCard";
-import Button from "../components/ui/Button";
+import  Button  from "../components/ui/Button";
 import { useSearch } from "../context/SearchContext";
 import Product from "../types/product";
 import Brand1 from "../assets/brand1.png";
