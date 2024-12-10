@@ -1,12 +1,10 @@
 import React from 'react';
-import { useModal } from '../context/ModalContext';
-import { AddProductModal } from './Account';
+import { useModal } from '../../context/ModalContext';
+import { AddProductModal } from '../Account';
 
 const Dashboard: React.FC = () => {
     const {showModal, setShowModal} = useModal()
   return (
-    <div className='flex'>
-        <Sidebar />
     <div className="p-6 bg-gray-100 min-h-screen">
       {/* Header */}
       <div className="text-center mb-8">
@@ -77,58 +75,9 @@ const Dashboard: React.FC = () => {
       </div>
       {showModal && <AddProductModal onClose={() => setShowModal(false)} />}
     </div>
-    </div>
   );
 };
 
 export default Dashboard;
 
 
-export const Sidebar: React.FC = () => {
-    return (
-      <div className="h-screen bg-white text-pink w-64 flex flex-col">
-        {/* Logo */}
-        <div className="p-6 text-center">
-          <h1 className="text-2xl font-bold text-black">n<span className='text-pink-600'>i</span>bo.</h1>
-        </div>
-  
-        {/* Navigation Links */}
-        <nav className="flex-1">
-          <ul className="space-y-4">
-            <li>
-              <a
-                href="#"
-                className="border-b-2 block py-2 px-6 text-pink-500 hover:bg-pink-500 hover:text-white rounded-lg transition"
-              >
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="border-b-2 block py-2 px-6 text-pink-500 hover:bg-pink-500 hover:text-white rounded-lg transition"
-              >
-                My Account
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="border-b-2 block py-2 px-6 text-pink-500 hover:bg-pink-500 hover:text-white rounded-lg transition"
-              >
-                My Products
-              </a>
-            </li>
-          </ul>
-        </nav>
-  
-        {/* Footer */}
-        <div className="p-6">
-          <p className="text-gray-400 text-sm">
-            © 2024 nibo. All rights reserved.
-          </p>
-        </div>
-      </div>
-    );
-  };
-  

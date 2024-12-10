@@ -88,7 +88,7 @@ export default function ProductPage() {
             <div className="mt-1 pl-32">
               <Link to={`/productdetail/${product.id}`}>
                 <Button className="w-3/4 bg-bg-active text-white h-12 rounded-md hover:bg-pink-600">
-                  Place order
+                  Buy Online
                 </Button>
               </Link>
             </div>

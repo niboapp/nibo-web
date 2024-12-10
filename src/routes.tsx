@@ -15,7 +15,9 @@ import { ProductDetails } from "./components/ProductDetails";
 import ErrorPage from "./pages/ErrorPage";
 import ProductList from "./pages/ProductList";
 import LoginForm from "./pages/LoginPage";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
+import { DashboardLayout } from "./components/DashboardLayout";
+import MyProductsTable from "./pages/dashboard/MyProducts";
 
 export const router = createBrowserRouter([
     {
@@ -25,26 +27,29 @@ export const router = createBrowserRouter([
       children: [
         { path: "", element: <HomePage products={products} /> },
         { path: "account", element: <Account /> },
+        { path: "help", element: <Help /> },
       ],
     },
-    { path: "help", element: <Help /> },
     { path: "cart", element: <Cart /> },
     {
       path: "/product/:id",
       element: <Product />,
     },
-    { path: "categories", element: <Categories products={products} /> },
+    { path: "categories", element: <Categories /> },
     {
       path: "/productdetail/:id",
       element: <ProductDetails />,
     },
     {
-      path: "/store/:storeName",
+      path: "/:storeName",
       element: <StoreDetails />,
     },
     { path: "stores", element: <StoresPage /> },
     { path: "login", element: <LoginForm /> },
-    { path: "dashboard", element: <Dashboard /> },
+    { path: "dashboard", element: <DashboardLayout />, children:[
+      {path: "", element: <Dashboard />},
+      {path: "myproducts", element: <MyProductsTable />},
+    ] },
     {
       path: "/categories/:category",
       element: <ProductList products={products} />,

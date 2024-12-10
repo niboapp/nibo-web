@@ -1,6 +1,7 @@
 import { PlusIcon, UploadIcon, XIcon } from "lucide-react";
 import { useState, ChangeEvent, FormEvent } from "react";
-import { toast, Toaster} from "sonner";
+import { toast, Toaster } from "sonner";
+import axios from "axios";
 
 interface ProductFormData {
   name: string;
@@ -19,7 +20,7 @@ export function AddProductModal({ onClose }: AddProductModalProps) {
     name: "",
     image: null,
     locations: "",
-    description: ""
+    description: "",
   });
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -30,21 +31,43 @@ export function AddProductModal({ onClose }: AddProductModalProps) {
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-      setFormData(prev => ({ ...prev, image: file }));
+      setFormData((prev) => ({ ...prev, image: file }));
     }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
+
+    const { name, image, locations, description } = formData;
+    if (!name || !locations || !description || !image) {
+      toast.error("Please fill all fields and upload an image.");
+      return;
+    }
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", name);
+    formDataToSend.append("locations", locations);
+    formDataToSend.append("description", description);
+    formDataToSend.append("image", image);
+
+    try {
+      const response = await axios.post("http://localhost:3000/products", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      toast.success("Product added successfully!");
+      console.log("Response:", response.data);
+      onClose(); // Close the modal after successful submission
+    } catch (error) {
+      console.error("Error adding product:", error);
+      toast.error("Failed to add product.");
+    }
   };
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -56,14 +79,10 @@ export function AddProductModal({ onClose }: AddProductModalProps) {
         >
           <XIcon size={20} />
         </button>
-        
         <h2 className="text-2xl font-semibold mb-6">Add New Product</h2>
-        
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Product Name
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Product Name</label>
             <input
               type="text"
               name="name"
@@ -75,22 +94,16 @@ export function AddProductModal({ onClose }: AddProductModalProps) {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Product Image
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Product Image</label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
               {imagePreview ? (
                 <div className="relative">
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="max-h-40 mx-auto"
-                  />
+                  <img src={imagePreview} alt="Preview" className="max-h-40 mx-auto" />
                   <button
                     type="button"
                     onClick={() => {
                       setImagePreview(null);
-                      setFormData(prev => ({ ...prev, image: null }));
+                      setFormData((prev) => ({ ...prev, image: null }));
                     }}
                     className="mt-2 text-sm text-red-600 hover:text-red-800"
                   >
@@ -114,18 +127,14 @@ export function AddProductModal({ onClose }: AddProductModalProps) {
                     </label>
                     <p className="pl-1">or drag and drop</p>
                   </div>
-                  <p className="text-xs text-gray-500">
-                    PNG, JPG, GIF up to 10MB
-                  </p>
+                  <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                 </div>
               )}
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Store Locations
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Store Locations</label>
             <input
               type="text"
               name="locations"
@@ -137,9 +146,7 @@ export function AddProductModal({ onClose }: AddProductModalProps) {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Product Description
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Product Description</label>
             <textarea
               name="description"
               value={formData.description}
@@ -161,11 +168,6 @@ export function AddProductModal({ onClose }: AddProductModalProps) {
             <button
               type="submit"
               className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-500"
-              onClick={() => {
-                toast("Product has been added successfully");
-                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                handleSubmit; onClose;
-              }}
             >
               Add Product
             </button>

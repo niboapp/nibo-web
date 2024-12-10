@@ -1,8 +1,9 @@
-import { FaShoppingCart, FaSearch, FaHome, FaList, FaStore, FaUser, FaQuestionCircle } from 'react-icons/fa';
+import { FaShoppingCart, FaSearch, FaHome, FaUser, FaQuestionCircle } from 'react-icons/fa';
 import { Outlet, NavLink } from 'react-router-dom';
 import { useSearch } from '../context/SearchContext';
 import { useEffect } from 'react';
 import TagManager from "react-gtm-module"
+import { Verified } from 'lucide-react';
 export default function Layout() {
   const {searchTerm, setSearchTerm} = useSearch()
   useEffect(() => {
@@ -21,7 +22,7 @@ export default function Layout() {
         </div>
 
         {/* Search Bar */}
-        <div className="relative flex-grow mx-20">
+        <div className="relative flex-grow mx-6 lg:mx-20">
           <input
             type="text"
             value={searchTerm}
@@ -58,23 +59,15 @@ export const BottomNav = () => {
           className={({ isActive }) => isActive ? "flex flex-col items-center text-bg-active" : "flex flex-col items-center hover:text-bg-active"}
         >
           <FaHome className="text-lg" />
-          <span className="text-xs">Home</span>
+          <span className="text-xs">My Brands</span>
         </NavLink>
 
         <NavLink
           to="/categories"
           className={({ isActive }) => isActive ? "flex flex-col items-center text-bg-active" : "flex flex-col items-center hover:text-bg-active"}
         >
-          <FaList className="text-lg" />
-          <span className="text-xs">Categories</span>
-        </NavLink>
-
-        <NavLink
-          to="/stores"
-          className={({ isActive }) => isActive ? "flex flex-col items-center text-bg-active" : "flex flex-col items-center hover:text-bg-active"}
-        >
-          <FaStore className="text-lg" />
-          <span className="text-xs">Stores</span>
+          <Verified className="text-lg" />
+          <span className="text-xs">Verify</span>
         </NavLink>
         {/*Change this to a Protected route in the code*/}
         <NavLink

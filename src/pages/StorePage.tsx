@@ -1,24 +1,29 @@
-import { useParams, Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import Product from '../types/product';
-import { ProductCard } from '../components/ProductCard';
-import products from '../data/products';
-import Store from '../types/stores';
-import ShoppingCart from '../components/ui/ShoppingCart';
-
+import { useParams, NavLink, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Product from "../types/product";
+import { ProductCard } from "../components/ProductCard";
+import products from "../data/products";
+import Store from "../types/stores";
+import { FaSearch, FaShoppingCart } from "react-icons/fa";
+import { useSearch } from "../context/SearchContext";
+import { Heart } from "lucide-react";
+import Promo from "../assets/promo1.jpg"
 export const StoreDetails: React.FC = () => {
   const { storeName } = useParams<{ storeName: string }>();
+  const { searchTerm, setSearchTerm } = useSearch();
   const [storeProducts, setStoreProducts] = useState<Product[]>([]);
   const [storeData, setStoreData] = useState<Store | null>(null);
 
   useEffect(() => {
-    const productsInStore = products.filter((product) => 
+    const productsInStore = products.filter((product) =>
       product.store?.some((store) => store.name === storeName)
     );
 
     if (productsInStore.length > 0) {
-      const storeInfo = productsInStore[0].store?.find((store) => store.name === storeName);
-      
+      const storeInfo = productsInStore[0].store?.find(
+        (store) => store.name === storeName
+      );
+
       if (storeInfo) {
         const { name, sold, ratings, imageUrl } = storeInfo;
         setStoreData({
@@ -26,57 +31,84 @@ export const StoreDetails: React.FC = () => {
           sold,
           productCount: productsInStore.length,
           ratings,
-          imageUrl: imageUrl ?? '/default-store-image.png',
+          imageUrl: imageUrl ?? "/default-store-image.png",
         });
       }
     }
-    
+
     setStoreProducts(productsInStore);
   }, [storeName]);
 
   if (!storeData) return <div>Loading...</div>;
 
   return (
-    <div className="max-w-md mx-auto bg-white min-h-screen ">
-      {/* Header */}
-      <div className="p-4  justify-between sticky top-0 flex items-center px-4 py-3 bg-white border-b z-50">
-        <Link to="/stores" className="text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-        </Link>
-        <h1 className="text-lg font-medium text-gray-800">{storeData.name}</h1>
-        <ShoppingCart />
-      </div>
+    <div className="flex flex-col min-h-screen bg-white text-gray-900">
+      <nav className="flex items-center justify-between p-4 bg-bg-primary text-gray-900">
+        <div className="text-2xl font-bold">
+          <Link to={"/"}>
+          n<span className="text-bg-active">i</span>bo<span className="text-bg-active">.</span>
+          </Link>
+        </div>
+        <div className="relative flex-grow mx-4 md:mx-10 lg:mx-20">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search"
+            className="w-full p-2 pl-4 rounded-md outline-none text-black"
+          />
+          <FaSearch className="absolute right-3 top-2 text-gray-900" />
+        </div>
 
+        {/* Cart Icon */}
+        <div className="text-2xl cursor-pointer">
+          <NavLink to="/cart">
+            <FaShoppingCart />
+          </NavLink>
+        </div>
+      </nav>
       {/* Store Information */}
-      <div className="p-6 text-center">
-        <img 
-          src={storeData.imageUrl} 
-          alt={storeData.name} 
-          className="w-20 h-20 mx-auto rounded-full object-cover" 
-        />
-        <p className="mt-4 text-xl font-semibold text-gray-800">{storeData.name}</p>
-        <p className="mt-1 text-sm text-gray-500">
-          {storeData.sold} Sold • {storeData.productCount} Products • {storeData.ratings} Rating
-        </p>
-        <button className="mt-4 px-6 py-2 bg-pink-500 text-white rounded-full font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block mr-1 align-text-top" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-          </svg>
-          Follow Store
-        </button>
-      </div>
+      <div className="flex flex-col">
+      <div className="p-6 flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+            <span className="text-xl font-semibold text-gray-800">4K</span>
+          </div>
+          <div>
+            <p className="text-lg font-semibold text-gray-900">146</p>
+            <p className="text-sm text-gray-500">Retailers</p>
+          </div>
+        </div>
 
+        <div className="text-center">
+          <p className="text-lg font-semibold text-gray-900">821</p>
+          <p className="text-sm text-gray-500">Products</p>
+        </div>
+
+        <div className="text-center">
+          <p className="text-lg font-semibold text-gray-900">4.8</p>
+          <p className="text-sm text-gray-500">Rating</p>
+        </div>
+      </div>
+      <div className="flex items-center justify-center">
+        <button className="flex bg-bg-active px-3 py-2 rounded-md text-bg-primary gap-2">Follow store <Heart /></button>
+      </div>
+      <div className="w-full p-3 rounded-lg">
+        <img src={Promo} className="w-full rounded-lg h-28 object-cover lg:h-60"/>
+      </div>
+      </div>
+     
       {/* Tab Section */}
       <div className="flex justify-around mt-4 border-b">
-        <button className="pb-2 border-b-4 border-pink-500 text-pink-500 font-semibold">Products</button>
+        <button className="pb-2 border-b-4 border-pink-500 text-pink-500 font-semibold">
+          Products
+        </button>
         <button className="pb-2 text-gray-500 font-semibold">Categories</button>
         <button className="pb-2 text-gray-500 font-semibold">Reviews</button>
       </div>
 
       {/* Store Products */}
-      <div className="grid grid-cols-2 gap-4 p-4">
+      <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3 lg:grid-cols-4">
         {storeProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
