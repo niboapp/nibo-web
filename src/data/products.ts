@@ -158,7 +158,7 @@ const products: Product[] = [
     quantityAvailable: 30,
     description: "Builds muscle and aids recovery.",
     imageUrl:
-      "https://i.pinimg.com/236x/1f/31/b3/1f31b353d567a352662efdb369f433b.jpg",
+      "https://i.pinimg.com/736x/1f/31/b3/1f31b358d5613a852662efdb769f437b.jpg",
     brand: "MyProtein",
     ratings: 4.6,
     reviews: 90,

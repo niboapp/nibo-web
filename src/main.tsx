@@ -1,66 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import './index.css';
-// Import your main layout and route components
-import Layout from './components/Layout'; // The layout with the Outlet
-import HomePage from './pages/HomePage';
-import Categories from './pages/Categories';
-import Account from './pages/Account';
-import Help from './pages/Help';
-import products from './data/products';
-import { SearchProvider } from './context/SearchContext';
-import { StoreDetails } from './pages/StorePage';
-import StoresPage from './pages/StoresPage';
-import Cart from './pages/Cart';
-import { CartProvider } from './context/CartContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import Product from './pages/Product';
-import { ProductDetails } from './components/ProductDetails';
-import ErrorPage from './pages/ErrorPage';
-import ProductList from './pages/ProductList';
-
-// Define routes using createBrowserRouter
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { RouterProvider } from "react-router-dom";
+import "./index.css";
+import { SearchProvider } from "./context/SearchContext";
+import { CartProvider } from "./context/CartContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { ModalProvider } from "./context/ModalContext";
+import { router } from "./routes";
 
 const queryClient = new QueryClient();
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />, // Layout with Outlet for nested routes
-    errorElement: <ErrorPage />,
-    children: [
-      { path: '', element: <HomePage products={products} /> },
-      { path: 'account', element: <Account /> },
-      { path: 'help', element: <Help /> },
-    ],
-  },
-  { path: 'cart', element: <Cart /> },
-  {
-    path: '/product/:id',
-    element: <Product />,
-  },
-  { path: 'categories', element: <Categories products={products} /> },
-  {
-    path: '/productdetail/:id',
-    element: <ProductDetails />,
-  },
-  {
-    path: '/store/:storeName',
-    element: <StoreDetails />,
-  },
-  { path: 'stores', element: <StoresPage /> },
-  {path: '/categories/:category', element: <ProductList products={products} /> }
-]);
-
-// Render the RouterProvider
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <SearchProvider>
-        <CartProvider>
-          <RouterProvider router={router} />
-        </CartProvider>
-      </SearchProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ModalProvider>
+          <SearchProvider>
+            <CartProvider>
+              <RouterProvider router={router} />
+            </CartProvider>
+          </SearchProvider>
+        </ModalProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );
