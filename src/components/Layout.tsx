@@ -1,17 +1,23 @@
-import { FaShoppingCart, FaSearch, FaHome, FaUser, FaQuestionCircle } from 'react-icons/fa';
-import { Outlet, NavLink } from 'react-router-dom';
-import { useSearch } from '../context/SearchContext';
-import { useEffect } from 'react';
-import TagManager from "react-gtm-module"
-import { Verified } from 'lucide-react';
+import {
+  FaShoppingCart,
+  FaSearch,
+  FaHome,
+  FaUser,
+  FaQuestionCircle,
+} from "react-icons/fa";
+import { Outlet, NavLink } from "react-router-dom";
+import { useSearch } from "../context/SearchContext";
+import { useEffect } from "react";
+import TagManager from "react-gtm-module";
+import { Verified } from "lucide-react";
 export default function Layout() {
-  const {searchTerm, setSearchTerm} = useSearch()
+  const { searchTerm, setSearchTerm } = useSearch();
   useEffect(() => {
     const tagManagerArgs = {
-        gtmId: 'GTM-WBKH9CX2'
+      gtmId: "GTM-WBKH9CX2",
     };
     TagManager.initialize(tagManagerArgs);
-}, []);
+  }, []);
   return (
     <div className="flex flex-col min-h-screen bg-white text-gray-900">
       {/* Top Navbar */}
@@ -35,7 +41,9 @@ export default function Layout() {
 
         {/* Cart Icon */}
         <div className="text-2xl cursor-pointer">
-          <NavLink to="/cart"><FaShoppingCart /></NavLink> 
+          <NavLink to="/cart">
+            <FaShoppingCart />
+          </NavLink>
         </div>
       </nav>
 
@@ -50,41 +58,56 @@ export default function Layout() {
   );
 }
 
-
 export const BottomNav = () => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 flex justify-around bg-bg-primary text-gray-900 py-2 z-50">
-        <NavLink
-          to="/"
-          className={({ isActive }) => isActive ? "flex flex-col items-center text-bg-active" : "flex flex-col items-center hover:text-bg-active"}
-        >
-          <FaHome className="text-lg" />
-          <span className="text-xs">My Brands</span>
-        </NavLink>
+      <NavLink
+        to="/"
+        className={({ isActive }) =>
+          isActive
+            ? "flex flex-col items-center text-bg-active"
+            : "flex flex-col items-center hover:text-bg-active"
+        }
+      >
+        <FaHome className="text-lg" />
+        <span className="text-xs">My Brands</span>
+      </NavLink>
 
-        <NavLink
-          to="/categories"
-          className={({ isActive }) => isActive ? "flex flex-col items-center text-bg-active" : "flex flex-col items-center hover:text-bg-active"}
-        >
-          <Verified className="text-lg" />
-          <span className="text-xs">Verify</span>
-        </NavLink>
-        {/*Change this to a Protected route in the code*/}
-        <NavLink
-          to="/login"
-          className={({ isActive }) => isActive ? "flex flex-col items-center text-bg-active" : "flex flex-col items-center hover:text-bg-active"}
-        >
-          <FaUser className="text-lg" />
-          <span className="text-xs">Account</span>
-        </NavLink>
+      <NavLink
+        to="/categories"
+        className={({ isActive }) =>
+          isActive
+            ? "flex flex-col items-center text-bg-active"
+            : "flex flex-col items-center hover:text-bg-active"
+        }
+      >
+        <Verified className="text-lg" />
+        <span className="text-xs">Verify</span>
+      </NavLink>
+      {/*Change this to a Protected route in the code*/}
+      <NavLink
+        to="/account"
+        className={({ isActive }) =>
+          isActive
+            ? "flex flex-col items-center text-bg-active"
+            : "flex flex-col items-center hover:text-bg-active"
+        }
+      >
+        <FaUser className="text-lg" />
+        <span className="text-xs">Account</span>
+      </NavLink>
 
-        <NavLink
-          to="/help"
-          className={({ isActive }) => isActive ? "flex flex-col items-center text-bg-active" : "flex flex-col items-center hover:text-bg-active"}
-        >
-          <FaQuestionCircle className="text-lg" />
-          <span className="text-xs">Help</span>
-        </NavLink>
-      </nav>
-  )
-}
+      <NavLink
+        to="/help"
+        className={({ isActive }) =>
+          isActive
+            ? "flex flex-col items-center text-bg-active"
+            : "flex flex-col items-center hover:text-bg-active"
+        }
+      >
+        <FaQuestionCircle className="text-lg" />
+        <span className="text-xs">Help</span>
+      </NavLink>
+    </nav>
+  );
+};

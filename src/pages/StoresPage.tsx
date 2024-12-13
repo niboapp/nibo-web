@@ -4,6 +4,7 @@ import products from "../data/products";
 import Store from "../types/stores";
 import LeftArrow from "../components/ui/LeftArrow";
 import ShoppingCart from "../components/ui/ShoppingCart";
+import { BottomNav } from "../components/Layout";
 
 interface StoreCardProps {
   store: Store;
@@ -37,7 +38,7 @@ const getUniqueStores = () => {
 const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
   return (
     <Link
-      to={`/store/${encodeURIComponent(store.name)}`}
+      to={`/${encodeURIComponent(store.name)}`}
       className="flex flex-col items-center p-4 bg-gray-50 rounded-lg shadow-sm space-y-2"
     >
       {/* Store Logo */}
@@ -59,22 +60,20 @@ const StoresPage: React.FC = () => {
   const stores = getUniqueStores();
 
   return (
-    <div className="max-w-md mx-auto sm:max-w-2xl md:max-w-3xl min-h-screen bg-white">
+    <div className="max-w-md mx-auto sm:max-w-2xl md:max-w-full min-h-screen bg-white">
       {/* Header */}
       <div className="sticky top-0 flex items-center px-4 py-3 bg-white border-b z-50">
         <Link to="/" className="text-gray-600">
           <LeftArrow />
         </Link>
         <h1 className="flex-1 text-center text-lg font-medium mr-6">Stores</h1>
-         <ShoppingCart />
+        <ShoppingCart />
       </div>
 
       {/* Stores Grid */}
       <div className="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {stores.length > 0 ? (
-          stores.map((store) => (
-            <StoreCard key={store.name} store={store} />
-          ))
+          stores.map((store) => <StoreCard key={store.name} store={store} />)
         ) : (
           <div className="text-center py-12 col-span-2 sm:col-span-3 md:col-span-4">
             <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -84,6 +83,7 @@ const StoresPage: React.FC = () => {
           </div>
         )}
       </div>
+      <BottomNav />
     </div>
   );
 };
