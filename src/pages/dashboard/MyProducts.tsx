@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
 import { PencilIcon, PlusIcon } from "lucide-react";
-import { useModal } from "../../context/ModalContext";
-import { AddProductModal } from "../../components/AddProductModal";
 import axios from "axios";
 import { toast } from "sonner";
 import Product from "../../types/product";
+import { useNavigate } from "react-router-dom";
 const MyProductsTable = () => {
   const [myProducts, setProducts] = useState<Product[]>([]);
-  const { showModal, setShowModal } = useModal();
-  //   const handleEditProduct = (productId) => {
-  //     // Placeholder for edit functionality
-  //     console.log(`Editing product ${productId}`);
-  //   };
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -101,13 +95,12 @@ const MyProductsTable = () => {
 
       <div className="mt-4 flex justify-center">
         <button
-          onClick={() => setShowModal(!showModal)}
+          onClick={() => navigate("/dashboard/myproducts/addproducts")}
           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-bg-active hover:bg-bg-active/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
         >
           <PlusIcon className="mr-2 h-4 w-4" />
           Add Product
         </button>
-        {showModal && <AddProductModal onClose={() => setShowModal(false)} />}
       </div>
     </div>
   );

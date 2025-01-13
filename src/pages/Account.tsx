@@ -11,6 +11,15 @@ import {
 import { BottomNav } from "../components/Layout";
 import { Link } from "react-router-dom";
 import ShoppingCart from "../components/ui/ShoppingCart";
+import { ChevronRight } from "lucide-react";
+import { gql, useQuery } from "@apollo/client";
+const MANUFACTURER_QUERY = gql`
+  query Manufacturers {
+    manufacturers {
+      name
+    }
+  }
+`;
 
 const AccountPage = () => {
   const menuItems = [
@@ -26,7 +35,8 @@ const AccountPage = () => {
     { icon: <FaMapMarkerAlt />, label: "Addresses", link: "/addresses" },
     { icon: <FaLock />, label: "Change Password", link: "/change-password" },
   ];
-
+  const { data } = useQuery(MANUFACTURER_QUERY);
+  console.log("Graphql data: ", data);
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -57,8 +67,8 @@ const AccountPage = () => {
       {/* Menu Items */}
       <div className="mt-2">
         {menuItems.map((item, index) => (
-          <a
-            href={item.link}
+          <Link
+            to={item.link}
             key={index}
             className="flex items-center justify-between px-4 py-3 bg-white hover:bg-gray-50 border-b border-gray-200"
           >
@@ -66,8 +76,8 @@ const AccountPage = () => {
               <div className="text-gray-600 text-xl">{item.icon}</div>
               <span className="text-gray-800">{item.label}</span>
             </div>
-            <div className="text-gray-400">{">"}</div>
-          </a>
+            <ChevronRight />
+          </Link>
         ))}
       </div>
       <BottomNav />

@@ -43,12 +43,13 @@ export function AddProductModal({ onClose }: AddProductModalProps) {
       toast.error("Please fill all fields and upload an image.");
       return;
     }
-
     const formDataToSend = new FormData();
     formDataToSend.append("name", name);
     formDataToSend.append("locations", locations);
     formDataToSend.append("description", description);
-    formDataToSend.append("image", image);
+    formDataToSend.append("image", "image.com");
+    formDataToSend.append("manufacturer_id", "cm4ip58kj0000oy6grpzkj8mg");
+    formDataToSend.append("price", "50");
 
     try {
       const response = await axios.post(

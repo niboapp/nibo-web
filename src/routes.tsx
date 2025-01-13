@@ -18,6 +18,8 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import { DashboardLayout } from "./components/DashboardLayout";
 import MyProductsTable from "./pages/dashboard/MyProducts";
 import AccountPage from "./pages/Account";
+import AddProduct from "./components/AddProducts";
+import Orders from "./pages/Orders";
 
 export const router = createBrowserRouter([
   // {
@@ -27,7 +29,14 @@ export const router = createBrowserRouter([
   // },
   { path: "/", element: <StoresPage />, errorElement: <ErrorPage /> },
   { path: "help", element: <Help /> },
-  { path: "account", element: <AccountPage /> },
+  {
+    path: "orders",
+    element: <Orders />,
+  },
+  {
+    path: "account",
+    element: <AccountPage />,
+  },
   { path: "cart", element: <Cart /> },
   {
     path: "/product/:id",
@@ -49,7 +58,14 @@ export const router = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       { path: "", element: <Dashboard /> },
-      { path: "myproducts", element: <MyProductsTable /> },
+      {
+        path: "myproducts",
+        element: <MyProductsTable />,
+      },
+      {
+        path: "addproducts",
+        element: <AddProduct />,
+      },
     ],
   },
   {
