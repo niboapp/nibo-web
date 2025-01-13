@@ -5,6 +5,7 @@ import { useSearch } from "../context/SearchContext";
 import { Heart } from "lucide-react";
 import Promo from "../assets/promo1.jpg";
 import { gql, useQuery } from "@apollo/client";
+import Product from "../types/product";
 const STORE_FEED = gql`
   query Products($where: ProductWhereInput) {
     products(where: $where) {
@@ -99,7 +100,7 @@ export const StoreDetails: React.FC = () => {
 
       {/* Store Products */}
       <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3 lg:grid-cols-4">
-        {data.products.map((product) => (
+        {data.products.map((product: Product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
