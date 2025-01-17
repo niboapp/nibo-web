@@ -7,7 +7,7 @@ import ShoppingCart from "../components/ui/ShoppingCart";
 import { BottomNav } from "../components/Layout";
 
 const MANUFACTURER_QUERY = gql`
-  query Manufacturers {
+  query Query {
     manufacturers {
       name
     }

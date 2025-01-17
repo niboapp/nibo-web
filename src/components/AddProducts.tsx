@@ -97,7 +97,7 @@ export default function AddProductPage() {
           createProductInput: {
             ...data,
             image_url,
-            manufacturerId: "cm4ip58kj0000oy6grpzkj8mg",
+            manufacturerId: "cm6128v580007oyfgivy1x27x",
             status: "AVAILABLE",
           },
         },

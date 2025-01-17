@@ -25,15 +25,15 @@ const defaultCenter = {
 const useGoogleMaps = (apiKey: string) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const formattedKey = apiKey.slice(0, apiKey.length - 1);
+  console.log(formattedKey);
   useEffect(() => {
     if (window.google?.maps) {
       setIsLoaded(true);
       return;
     }
-
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,marker`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${formattedKey}&libraries=places,marker`;
     script.async = true;
     script.defer = true;
 
@@ -63,9 +63,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [directionsRenderer, setDirectionsRenderer] =
     useState<google.maps.DirectionsRenderer | null>(null);
-  const apiKey = "AIzaSyAZ2JRiOMNzXpDqUI0jMmxKGqQzVBQO9YQ";
 
-  const { isLoaded, error: mapsError } = useGoogleMaps(apiKey);
+  const { isLoaded, error: mapsError } = useGoogleMaps(
+    import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ""
+  );
 
   // Initialize map
   useEffect(() => {
@@ -97,12 +98,18 @@ const MapComponent: React.FC<MapComponentProps> = ({
   useEffect(() => {
     if (!map || !Stores || !Stores.length || !window.google) return;
 
-    // Clear existing markers
-    map.overlayMapTypes.clear();
+    // Arrays to keep track of all markers and info windows
+    const markers: google.maps.Marker[] = [];
+    const infoWindows: google.maps.InfoWindow[] = [];
+
+    // Clear existing directions if any
+    if (directionsRenderer) {
+      directionsRenderer.setMap(null);
+    }
 
     // Add user location marker if valid coordinates exist
     if (userLocation?.latitude && userLocation?.longitude) {
-      new google.maps.Marker({
+      const userMarker = new google.maps.Marker({
         position: {
           lat: userLocation.latitude,
           lng: userLocation.longitude,
@@ -117,49 +124,77 @@ const MapComponent: React.FC<MapComponentProps> = ({
           strokeWeight: 2,
         },
       });
+      markers.push(userMarker);
     }
 
-    // Add store markers for stores with valid locations
+    // Add store markers
     Stores.forEach((store) => {
-      if (!store?.location?.latitude || !store?.location?.longitude) return;
+      if (!store?.latitude || !store?.longitude) return;
 
       const marker = new google.maps.Marker({
         position: {
-          lat: store.location.latitude,
-          lng: store.location.longitude,
+          lat: store.latitude,
+          lng: store.longitude,
         },
         map,
-        title: store.name || "Unnamed Store",
+        title: `Store ${store.city}`,
       });
+      markers.push(marker);
 
       const infoWindow = new google.maps.InfoWindow({
         content: `
           <div class="min-w-[200px]">
-            <p class="font-medium text-sm">${store.name}</p>
+            <p class="font-medium text-sm">Store ${store.city}</p>
             <p class="text-gray-600 text-xs">${calculateDistance(
               userLocation?.latitude || defaultCenter.lat,
               userLocation?.longitude || defaultCenter.lng,
-              store.location.latitude,
-              store.location.longitude
+              store.latitude,
+              store.longitude
             )} away</p>
           </div>
         `,
       });
+      infoWindows.push(infoWindow);
 
       marker.addListener("click", () => {
+        // Close all other info windows
+        infoWindows.forEach((window) => window.close());
+
+        // Clear previous directions
+
+        directionsRenderer?.setMap(null);
+        setDirectionsRenderer(null);
         setSelectedStore(store);
         infoWindow.open(map, marker);
         fetchDirections(store);
       });
     });
+
+    // Cleanup function
+    return () => {
+      // Clear all markers from the map
+      markers.forEach((marker) => marker.setMap(null));
+
+      // Close all info windows
+      infoWindows.forEach((window) => window.close());
+
+      // Clear directions
+      if (directionsRenderer) {
+        directionsRenderer.setMap(null);
+        setDirectionsRenderer(null);
+      }
+
+      // Reset selected store
+      setSelectedStore(null);
+    };
   }, [map, Stores, userLocation]);
 
   const fetchDirections = async (store: Store) => {
     if (
       !userLocation?.latitude ||
       !userLocation?.longitude ||
-      !store?.location?.latitude ||
-      !store?.location?.longitude ||
+      !store?.latitude ||
+      !store?.longitude ||
       !map ||
       !window.google
     )
@@ -173,8 +208,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
           lng: userLocation.longitude,
         },
         destination: {
-          lat: store.location.latitude,
-          lng: store.location.longitude,
+          lat: store.latitude,
+          lng: store.longitude,
         },
         travelMode: google.maps.TravelMode.DRIVING,
       });
@@ -254,25 +289,22 @@ const MapComponent: React.FC<MapComponentProps> = ({
       <div id="google-map" style={mapContainerStyle} />
 
       {/* Selected store info */}
-      {selectedStore?.location && (
+      {selectedStore && (
         <div className="absolute bottom-4 left-4 right-4 bg-white shadow-lg p-4">
           <div className="flex items-center gap-4">
             <div>
-              <h3 className="font-medium text-sm">
-                {selectedStore.name || "Unnamed Store"}
-              </h3>
-              {userLocation?.latitude &&
-                userLocation?.longitude &&
-                selectedStore.location && (
-                  <p className="text-xs text-gray-600">
-                    {calculateDistance(
-                      userLocation.latitude,
-                      userLocation.longitude,
-                      selectedStore.location.latitude,
-                      selectedStore.location.longitude
-                    )}
-                  </p>
-                )}
+              <h3 className="font-medium text-sm">Store {selectedStore.id}</h3>
+              {userLocation?.latitude && userLocation?.longitude && (
+                <p className="text-xs text-gray-600">
+                  {calculateDistance(
+                    userLocation.latitude,
+                    userLocation.longitude,
+                    selectedStore.latitude,
+                    selectedStore.longitude
+                  )}{" "}
+                  away
+                </p>
+              )}
               {directionsRenderer?.getDirections()?.routes[0]?.legs[0]
                 ?.duration && (
                 <p className="text-xs text-gray-600">

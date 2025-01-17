@@ -1,15 +1,7 @@
-
 interface Store {
-  productCount?: number;
-  imageUrl?: string;
-  name: string;
-  location?: {
-    latitude: number;
-    longitude: number;
-  };
-  sold: number;
-  
-  ratings?: number;
+  id: string;
+  latitude: number;
+  longitude: number;
+  city: string;
 }
-
 export default Store;
