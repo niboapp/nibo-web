@@ -18,8 +18,8 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import { DashboardLayout } from "./components/DashboardLayout";
 import MyProductsTable from "./pages/dashboard/MyProducts";
 import AccountPage from "./pages/Account";
-import AddProduct from "./components/AddProducts";
 import Orders from "./pages/Orders";
+import AddProductPage from "./components/AddProducts";
 
 export const router = createBrowserRouter([
   // {
@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "addproducts",
-        element: <AddProduct />,
+        element: <AddProductPage />,
       },
     ],
   },

@@ -1,9 +1,8 @@
 import React from "react";
-import { useModal } from "../../context/ModalContext";
-import { AddProductModal } from "../../components/AddProductModal";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
-  const { showModal, setShowModal } = useModal();
+  const navigate = useNavigate();
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       {/* Header */}
@@ -77,14 +76,13 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
           <button
-            onClick={() => setShowModal(!showModal)}
+            onClick={() => navigate("/dashboard/addproducts")}
             className="w-full py-3 bg-pink-500 text-white font-bold rounded-md hover:bg-pink-600"
           >
             Add Product
           </button>
         </div>
       </div>
-      {showModal && <AddProductModal onClose={() => setShowModal(false)} />}
     </div>
   );
 };

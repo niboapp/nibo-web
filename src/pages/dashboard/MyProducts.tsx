@@ -95,7 +95,7 @@ const MyProductsTable = () => {
 
       <div className="mt-4 flex justify-center">
         <button
-          onClick={() => navigate("/dashboard/myproducts/addproducts")}
+          onClick={() => navigate("/dashboard/addproducts")}
           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-bg-active hover:bg-bg-active/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
         >
           <PlusIcon className="mr-2 h-4 w-4" />

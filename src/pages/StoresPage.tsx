@@ -45,16 +45,16 @@ const StoresPage: React.FC = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="text-center py-12">
-        <h3 className="text-lg font-medium text-red-600 mb-2">
-          Failed to load stores
-        </h3>
-        <p className="text-gray-600">Please try again later.</p>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="text-center py-12">
+  //       <h3 className="text-lg font-medium text-red-600 mb-2">
+  //         Failed to load stores
+  //       </h3>
+  //       <p className="text-gray-600">Please try again later.</p>
+  //     </div>
+  //   );
+  // }
 
   const manufacturers = data?.manufacturers || [];
 
@@ -70,20 +70,31 @@ const StoresPage: React.FC = () => {
       </div>
 
       {/* Stores List */}
-      <div className="py-6 px-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {manufacturers.length > 0 ? (
-          manufacturers.map((manufacturer: Store) => (
-            <StoreCard key={manufacturer.name} store={manufacturer} />
-          ))
-        ) : (
-          <div className="text-center col-span-full py-12">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No stores found
-            </h3>
-            <p className="text-gray-600">Try adjusting your search criteria.</p>
-          </div>
-        )}
-      </div>
+      {error ? (
+        <div className="text-center py-12">
+          <h3 className="text-lg font-medium text-red-600 mb-2">
+            Failed to load stores
+          </h3>
+          <p className="text-gray-600">Please try again later.</p>
+        </div>
+      ) : (
+        <div className="py-6 px-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {manufacturers.length > 0 ? (
+            manufacturers.map((manufacturer: Store) => (
+              <StoreCard key={manufacturer.name} store={manufacturer} />
+            ))
+          ) : (
+            <div className="text-center col-span-full py-12">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No stores found
+              </h3>
+              <p className="text-gray-600">
+                Try adjusting your search criteria.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Bottom Navigation */}
       <BottomNav />
