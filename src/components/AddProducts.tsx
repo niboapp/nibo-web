@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import { UploadIcon } from "lucide-react";
 import { toast, Toaster } from "sonner";
@@ -11,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 const CREATE_PRODUCT = gql`
   mutation createProduct($createProductInput: CreateProductInput!) {
     createProduct(createProductInput: $createProductInput) {
-      status
       price
       name
       id
@@ -32,10 +32,7 @@ const CREATE_PRODUCT = gql`
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  price: z
-    .string()
-    .min(1, "Price is required")
-    .transform((value) => parseFloat(value)),
+  price: z.string().min(1, "Price is required"),
   category: z.enum(["Antibiotics", "Painkillers", "Supplements"]),
   batch_no: z
     .string()
@@ -58,7 +55,6 @@ export default function AddProductPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [createProduct] = useMutation(CREATE_PRODUCT);
   const navigate = useNavigate();
-  console.log(imageFile);
   const {
     register,
     handleSubmit,
@@ -68,7 +64,7 @@ export default function AddProductPage() {
     defaultValues: {
       name: "",
       description: "",
-      price: 0,
+      price: "",
       category: "Antibiotics",
       batch_no: 0,
       batch_quantity: 0,
@@ -97,13 +93,11 @@ export default function AddProductPage() {
           createProductInput: {
             ...data,
             image_url,
-            manufacturerId: "cm6128v580007oyfgivy1x27x",
-            status: "AVAILABLE",
+            manufacturerId: import.meta.env.VITE_MANUFACTURER_ID,
           },
         },
       });
 
-      console.log(response);
       toast.success("Product added successfully!");
       navigate("/dashboard/myproducts");
     } catch (error) {
