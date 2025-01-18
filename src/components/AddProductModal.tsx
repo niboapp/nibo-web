@@ -70,6 +70,9 @@ export default function AddProductPage() {
       const response = await createProduct({
         variables: {
           createProductInput: {
+            ...formData,
+            imageUrl
+          }
             name: formData.name,
             description: formData.description,
             image_url,
