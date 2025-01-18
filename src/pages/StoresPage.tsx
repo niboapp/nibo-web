@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
-import Store from "../types/stores";
+import { Manufacturer } from "../types/manufacturer";
 import LeftArrow from "../components/ui/LeftArrow";
 import ShoppingCart from "../components/ui/ShoppingCart";
 import { BottomNav } from "../components/Layout";
@@ -15,7 +15,7 @@ const MANUFACTURER_QUERY = gql`
 `;
 
 interface StoreCardProps {
-  store: Store;
+  store: Manufacturer;
 }
 
 const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
@@ -80,7 +80,7 @@ const StoresPage: React.FC = () => {
       ) : (
         <div className="py-6 px-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
           {manufacturers.length > 0 ? (
-            manufacturers.map((manufacturer: Store) => (
+            manufacturers.map((manufacturer: Manufacturer) => (
               <StoreCard key={manufacturer.name} store={manufacturer} />
             ))
           ) : (
