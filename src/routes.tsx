@@ -13,13 +13,18 @@ import Product from "./pages/Product";
 import { ProductDetails } from "./components/ProductDetails";
 import ErrorPage from "./pages/ErrorPage";
 import ProductList from "./pages/ProductList";
-import LoginForm from "./pages/LoginPage";
+import LoginForm from "./pages/auth/LoginPage";
 import Dashboard from "./pages/dashboard/Dashboard";
 import { DashboardLayout } from "./components/DashboardLayout";
 import MyProductsTable from "./pages/dashboard/MyProducts";
 import AccountPage from "./pages/Account";
 import Orders from "./pages/Orders";
 import AddProductPage from "./components/AddProducts";
+import AuthPage from "./pages/auth/Welcome";
+import CreateAccount from "./pages/auth/SignUpPage";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import VerificationCode from "./pages/auth/VerificationCode";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 export const router = createBrowserRouter([
   // {
@@ -53,6 +58,11 @@ export const router = createBrowserRouter([
   },
   { path: "stores", element: <StoresPage /> },
   { path: "login", element: <LoginForm /> },
+  { path: "login", element: <AuthPage /> },
+  { path: "signup", element: <CreateAccount /> },
+  { path: "forgotpassword", element: <ForgotPassword /> },
+  { path: "verify-otp", element: <VerificationCode /> },
+  { path: "reset", element: <ResetPassword /> },
   {
     path: "dashboard",
     element: <DashboardLayout />,
