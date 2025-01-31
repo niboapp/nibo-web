@@ -1,54 +1,71 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useQuery, gql } from "@apollo/client";
 import Product from "../types/product";
 import { ProductCard } from "./ProductCard";
-import products from "../data/products";
 import { useCart } from "../context/CartContext";
-import { Heart} from "lucide-react";
+import { Heart } from "lucide-react";
 import { toast, Toaster } from "sonner";
 
-import Store from "../types/stores";
+// GraphQL query for product details
+const GET_PRODUCT = gql`
+  query Query($where: ProductWhereUniqueInput!) {
+    product(where: $where) {
+      name
+      image_url
+      category
+      createdAt
+      batch_quantity
+    }
+  }
+`;
 
+// Query for related products
+const GET_RELATED_PRODUCTS = gql`
+  query GetRelatedProducts($category: String!) {
+    products(where: { category: $category }) {
+      id
+      name
+      image_url
+      category
+      batch_quantity
+    }
+  }
+`;
 
 export const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-  const { addItem } = useCart();
   const navigate = useNavigate();
+  const { addItem } = useCart();
 
+  // Fetch main product
+  const { loading, error, data } = useQuery(GET_PRODUCT, {
+    variables: {
+      where: { id },
+    },
+    skip: !id,
+  });
 
-  // Calculate distances when we have both product and user location
-
-
-  useEffect(() => {
-    const prod = products.find((product) => product.id === id) || null;
-    setProduct(prod);
-
-    if (prod) {
-      const related = products
-        .filter((p) => p.category === prod.category && p.id !== prod.id)
-        .slice(0, 4);
-      setRelatedProducts(related);
+  // Fetch related products when we have the main product's category
+  const { data: relatedData, loading: relatedLoading } = useQuery(
+    GET_RELATED_PRODUCTS,
+    {
+      variables: {
+        category: data?.product?.category || "",
+      },
+      skip: !data?.product?.category,
     }
-  }, [id]);
-
-  const StoreLocation = ({
-    store,
-    showLabel = true,
-  }: {
-    store: Store;
-    showLabel?: boolean;
-  }) => (
-    <div className="flex items-center justify-between py-1">
-      <div className="flex-1">
-        {showLabel && (
-          <span className="text-gray-500 text-sm">{store.name} </span>
-        )}
-      </div>
-    </div>
   );
-  if (!product) return <div>Loading...</div>;
+
+  // Filter out the current product from related products
+  const relatedProducts =
+    relatedData?.products?.filter((p: Product) => p.id !== id)?.slice(0, 4) ||
+    [];
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error loading product: {error.message}</div>;
+  if (!data?.product) return <div>Product not found</div>;
+
+  const product = data.product;
 
   return (
     <div className="max-w-lg mx-auto bg-white min-h-screen">
@@ -78,7 +95,7 @@ export const ProductDetails: React.FC = () => {
       <div className="p-4">
         <div className="relative bg-white rounded-lg shadow-sm">
           <img
-            src={product.imageUrl}
+            src={product.image_url}
             alt={product.name}
             className="w-full h-64 object-contain p-4"
           />
@@ -89,37 +106,30 @@ export const ProductDetails: React.FC = () => {
 
         <div className="mt-4">
           <h2 className="text-xl font-medium">{product.name}</h2>
-          <p className="text-xl font-medium mt-1">₦{product.price}</p>
-          {product.store && product.store[0] && (
-            <StoreLocation store={product.store[0]} />
-          )}
+          <p className="text-sm text-gray-500">{product.category}</p>
+          <p className="text-sm text-gray-500">
+            Batch Quantity: {product.batch_quantity}
+          </p>
+          <p className="text-sm text-gray-500">
+            Created: {new Date(product.createdAt).toLocaleDateString()}
+          </p>
         </div>
       </div>
-      {/* Store Locations */}
-      {product.store && product.store.length > 1 && (
-        <div className="px-4 mt-2">
-          <h3 className="text-sm font-medium mb-2">Other Store Locations:</h3>
-          {product.store.slice(1).map((store, index) => (
-            <p
-              key={`${store.name}-${index}`}
-              className="text-gray-500 text-sm mb-1"
-            >
-              {store.name}{" "}
-            </p>
-          ))}
-        </div>
-      )}
 
       {/* Related Products */}
       <div className="mt-2 p-4">
         <h3 className="text-base font-medium">
-          Other Products From {product.store && product.store[0]?.name}
+          Other {product.category} Products
         </h3>
-        <div className="grid grid-cols-2 gap-4 mt-3">
-          {relatedProducts.map((relatedProduct) => (
-            <ProductCard key={relatedProduct.id} product={relatedProduct} />
-          ))}
-        </div>
+        {relatedLoading ? (
+          <div>Loading related products...</div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4 mt-3">
+            {relatedProducts.map((relatedProduct: Product) => (
+              <ProductCard key={relatedProduct.id} product={relatedProduct} />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* CTA Buttons */}

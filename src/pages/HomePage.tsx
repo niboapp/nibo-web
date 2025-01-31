@@ -1,5 +1,5 @@
 import { ProductCard } from "../components/ProductCard";
-import  Button  from "../components/ui/Button";
+import Button from "../components/ui/Button";
 import { useSearch } from "../context/SearchContext";
 import Product from "../types/product";
 import Brand1 from "../assets/brand1.png";
@@ -17,7 +17,6 @@ interface Brand {
   src: string;
   alt: string;
 }
-
 
 const healthBrands: Brand[] = [
   { src: Brand1, alt: "Niropharm" },
@@ -68,7 +67,6 @@ export const HomePage: React.FC<HomePageProps> = ({ products }) => {
     // Handle navigation
     console.log(`Viewing product: ${productId}`);
   };
-  
 
   return (
     <div className="container mx-auto px-4 py-6">
