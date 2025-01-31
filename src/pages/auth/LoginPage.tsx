@@ -2,33 +2,32 @@ import { Eye, EyeClosed } from "lucide-react";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
-type LoginFormInputs = {
-  email: string;
-  password: string;
-};
-
-const userDetails: LoginFormInputs = {
-  email: "test@gmail.com",
-  password: "Password1234",
-};
+import { LoginFormInputs } from "../../types/auth";
+import { authService } from "../../api/auth";
 const LoginForm: React.FC = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<LoginFormInputs>();
+
   const navigate = useNavigate();
-  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-    if (
-      data.email === userDetails.email &&
-      data.password === userDetails.password
-    ) {
-      setTimeout(() => navigate("/dashboard"), 1200);
-    } else {
-      setError(true);
+
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+    try {
+      setIsLoading(true);
+      await authService.login(data);
+      navigate("/dashboard");
+    } catch (error) {
+      setError("root", {
+        type: "server",
+        message: error instanceof Error ? error.message : "Invalid credentials",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -40,6 +39,13 @@ const LoginForm: React.FC = () => {
           Welcome to Nibo! Come on in to continue making your products more
           accessible.
         </p>
+
+        {errors.root && (
+          <div className="mb-4 p-3 text-sm text-red-500 bg-red-50 rounded-md">
+            {errors.root.message}
+          </div>
+        )}
+
         <div className="mb-4">
           <label
             htmlFor="email"
@@ -50,7 +56,13 @@ const LoginForm: React.FC = () => {
           <input
             id="email"
             type="email"
-            {...register("email", { required: "Email is required" })}
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address",
+              },
+            })}
             className={`mt-1 block w-full border rounded p-2 ${
               errors.email ? "border-red-500" : "border-gray-300"
             }`}
@@ -60,6 +72,7 @@ const LoginForm: React.FC = () => {
             <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
           )}
         </div>
+
         <div className="mb-4">
           <label
             htmlFor="password"
@@ -71,7 +84,13 @@ const LoginForm: React.FC = () => {
             <input
               id="password"
               type={showPassword ? "text" : "password"}
-              {...register("password", { required: "Password is required" })}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters",
+                },
+              })}
               className={`mt-1 block w-full border rounded p-2 ${
                 errors.password ? "border-red-500" : "border-gray-300"
               }`}
@@ -91,22 +110,20 @@ const LoginForm: React.FC = () => {
             </p>
           )}
         </div>
+
         <div className="text-right mb-4">
           <a href="/reset" className="text-pink-500 hover:underline text-sm">
             Reset
           </a>
         </div>
+
         <button
           type="submit"
-          className="w-full bg-pink-500 hover:bg-pink-600 text-white py-2 rounded"
+          disabled={isLoading}
+          className="w-full bg-pink-500 hover:bg-pink-600 text-white py-2 rounded disabled:bg-pink-300 disabled:cursor-not-allowed"
         >
-          Log in
+          {isLoading ? "Logging in..." : "Log in"}
         </button>
-        {error && (
-          <p className="text-red-500 text-lg mt-1">
-            The password or email you provided is incorrect
-          </p>
-        )}
       </form>
     </div>
   );

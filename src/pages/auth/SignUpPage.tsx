@@ -1,13 +1,42 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { SignupFormInputs } from "../../types/auth";
+import { authService } from "../../api/auth";
 
 const CreateAccount: React.FC = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
-  const toggleConfirmPasswordVisibility = () =>
-    setConfirmPasswordVisible(!confirmPasswordVisible);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setError,
+  } = useForm<SignupFormInputs>();
+
+  const password = watch("password");
+
+  const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
+    try {
+      setIsLoading(true);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { confirmPassword, ...signupData } = data;
+      await authService.signup(signupData);
+      navigate("/dashboard");
+    } catch (error) {
+      setError("root", {
+        type: "server",
+        message: error instanceof Error ? error.message : "An error occurred",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -19,7 +48,11 @@ const CreateAccount: React.FC = () => {
       </div>
       <div className="flex items-center justify-center min-h-screen">
         <div className="w-full max-w-md p-3 bg-white">
-          <button className="text-gray-500 mb-4 hover:text-gray-700 flex items-center">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="text-gray-500 mb-4 hover:text-gray-700 flex items-center"
+          >
             <ArrowLeft className="w-5 h-5 mr-1" />
           </button>
 
@@ -30,7 +63,13 @@ const CreateAccount: React.FC = () => {
             Create your business account now to explore more sales possibilities
           </p>
 
-          <form className="space-y-4">
+          {errors.root && (
+            <div className="mb-4 p-3 text-sm text-red-500 bg-red-50 rounded-md">
+              {errors.root.message}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <label
                 htmlFor="name"
@@ -39,11 +78,23 @@ const CreateAccount: React.FC = () => {
                 Name
               </label>
               <input
+                {...register("name", {
+                  required: "Name is required",
+                  minLength: {
+                    value: 2,
+                    message: "Name must be at least 2 characters long",
+                  },
+                })}
                 type="text"
                 id="name"
                 placeholder="Enter your fullname"
                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-700 focus:ring-pink-500 focus:border-pink-500"
               />
+              {errors.name && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -54,11 +105,23 @@ const CreateAccount: React.FC = () => {
                 Email
               </label>
               <input
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address",
+                  },
+                })}
                 type="email"
                 id="email"
                 placeholder="Enter your email"
                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-700 focus:ring-pink-500 focus:border-pink-500"
               />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -69,11 +132,19 @@ const CreateAccount: React.FC = () => {
                 Business Name
               </label>
               <input
+                {...register("businessName", {
+                  required: "Business name is required",
+                })}
                 type="text"
                 id="businessName"
                 placeholder="Enter your business name"
                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-700 focus:ring-pink-500 focus:border-pink-500"
               />
+              {errors.businessName && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.businessName.message}
+                </p>
+              )}
             </div>
 
             <div className="relative">
@@ -84,6 +155,19 @@ const CreateAccount: React.FC = () => {
                 Password
               </label>
               <input
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters long",
+                  },
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
+                  },
+                })}
                 type={passwordVisible ? "text" : "password"}
                 id="password"
                 placeholder="Enter your Password"
@@ -92,7 +176,7 @@ const CreateAccount: React.FC = () => {
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-gray-500 hover:text-gray-700"
-                onClick={togglePasswordVisibility}
+                onClick={() => setPasswordVisible(!passwordVisible)}
               >
                 {passwordVisible ? (
                   <EyeOff className="w-5 h-5" />
@@ -100,6 +184,11 @@ const CreateAccount: React.FC = () => {
                   <Eye className="w-5 h-5" />
                 )}
               </button>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div className="relative">
@@ -110,6 +199,11 @@ const CreateAccount: React.FC = () => {
                 Confirm Password
               </label>
               <input
+                {...register("confirmPassword", {
+                  required: "Please confirm your password",
+                  validate: (value) =>
+                    value === password || "Passwords do not match",
+                })}
                 type={confirmPasswordVisible ? "text" : "password"}
                 id="confirmPassword"
                 placeholder="Re-enter your Password"
@@ -118,7 +212,9 @@ const CreateAccount: React.FC = () => {
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-gray-500 hover:text-gray-700"
-                onClick={toggleConfirmPasswordVisibility}
+                onClick={() =>
+                  setConfirmPasswordVisible(!confirmPasswordVisible)
+                }
               >
                 {confirmPasswordVisible ? (
                   <EyeOff className="w-5 h-5" />
@@ -126,13 +222,19 @@ const CreateAccount: React.FC = () => {
                   <Eye className="w-5 h-5" />
                 )}
               </button>
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
 
             <button
               type="submit"
-              className="w-full px-4 py-2 bg-pink-500 text-white font-semibold rounded-md shadow-sm hover:bg-pink-600"
+              disabled={isLoading}
+              className="w-full px-4 py-2 bg-pink-500 text-white font-semibold rounded-md shadow-sm hover:bg-pink-600 disabled:bg-pink-300 disabled:cursor-not-allowed"
             >
-              Create an Account
+              {isLoading ? "Creating Account..." : "Create an Account"}
             </button>
           </form>
 
