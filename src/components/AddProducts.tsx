@@ -19,10 +19,10 @@ const CREATE_PRODUCT = gql`
       updatedAt
       description
       category
-      image_url
+      imageUrl
       batch_no
       serial_no
-      batch_quantity
+      batchQuantity
       manufacturerId
     }
   }
@@ -38,7 +38,7 @@ const productSchema = z.object({
     .string()
     .min(1, "Batch number is required")
     .transform((value) => parseInt(value)),
-  batch_quantity: z
+  batchQuantity: z
     .string()
     .min(1, "Batch quantity is required")
     .transform((value) => parseInt(value)),
@@ -67,7 +67,7 @@ export default function AddProductPage() {
       price: "",
       category: "Antibiotics",
       batch_no: 0,
-      batch_quantity: 0,
+      batchQuantity: 0,
       serial_no: undefined,
     },
   });
@@ -86,13 +86,13 @@ export default function AddProductPage() {
 
   const onSubmit = async (data: ProductFormData) => {
     try {
-      const image_url = "image.com"; // Placeholder URL
+      const imageUrl = "image.com"; // Placeholder URL
       console.log("Submitted");
       const response = await createProduct({
         variables: {
           createProductInput: {
             ...data,
-            image_url,
+            imageUrl,
             manufacturerId: import.meta.env.VITE_MANUFACTURER_ID,
           },
         },
@@ -229,13 +229,13 @@ export default function AddProductPage() {
             </label>
             <input
               type="number"
-              {...register("batch_quantity")}
+              {...register("batchQuantity")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
               placeholder="Enter batch quantity"
             />
-            {errors.batch_quantity && (
+            {errors.batchQuantity && (
               <p className="text-red-500 text-sm">
-                {errors.batch_quantity.message}
+                {errors.batchQuantity.message}
               </p>
             )}
           </div>

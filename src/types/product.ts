@@ -5,9 +5,9 @@ interface Product {
   name: string;
   price: number;
   category: string;
-  batch_quantity: number;
+  batchQuantity: number;
   description: string;
-  image_url: string;
+  imageUrl: string;
   brand: string;
   store?: Store[];
   ratings: number;

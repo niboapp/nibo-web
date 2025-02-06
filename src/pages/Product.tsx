@@ -21,10 +21,10 @@ const GET_PRODUCT = gql`
   query Query($where: ProductWhereUniqueInput!) {
     product(where: $where) {
       name
-      image_url
+      imageUrl
       category
       createdAt
-      batch_quantity
+      batchQuantity
     }
   }
 `;
@@ -168,7 +168,7 @@ export default function ProductPage() {
           <div className="flex gap-3">
             <div className="w-[104px] h-[104px] flex-shrink-0 rounded-lg overflow-hidden">
               <img
-                src={product.image_url}
+                src={product.imageUrl}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
@@ -178,7 +178,7 @@ export default function ProductPage() {
               <h2 className="text-lg font-semibold">{product.name}</h2>
               <p className="text-sm text-gray-500">{product.category}</p>
               <p className="text-sm text-gray-500">
-                Batch Quantity: {product.batch_quantity}
+                Batch Quantity: {product.batchQuantity}
               </p>
               <p className="text-sm text-gray-500">
                 Created: {new Date(product.createdAt).toLocaleDateString()}

@@ -4,12 +4,55 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { SignupFormInputs } from "../../types/auth";
 import { authService } from "../../api/auth";
+import { useMutation, gql } from "@apollo/client";
+import { toast } from "sonner";
+
+const SIGNUP_MUTATION = gql`
+  mutation SignUpManufacturer(
+    $email: String!
+    $password: String!
+    $confirmPassword: String!
+    $businessName: String!
+  ) {
+    signUpManufacturer(
+      signUpManufacturerInput: {
+        email: $email
+        password: $password
+        confirmPassword: $confirmPassword
+        businessName: $businessName
+        image: "rrr.com"
+      }
+    ) {
+      token
+      user {
+        id
+        email
+        businessName
+      }
+    }
+  }
+`;
 
 const CreateAccount: React.FC = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const [signup, { loading: isLoading }] = useMutation(SIGNUP_MUTATION, {
+    onCompleted: (data) => {
+      console.log(data);
+      if (data.signUpManufacturer.token) {
+        authService.setToken(data.signUpManufacturer.token);
+        navigate("/dashboard");
+      }
+    },
+    onError: (error) => {
+      setError("root", {
+        type: "server",
+        message: error.message || "An error occurred during signup",
+      });
+    },
+  });
 
   const {
     register,
@@ -23,18 +66,18 @@ const CreateAccount: React.FC = () => {
 
   const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
     try {
-      setIsLoading(true);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { confirmPassword, ...signupData } = data;
-      await authService.signup(signupData);
-      navigate("/dashboard");
-    } catch (error) {
-      setError("root", {
-        type: "server",
-        message: error instanceof Error ? error.message : "An error occurred",
+      await signup({
+        variables: {
+          email: data.email,
+          password: data.password,
+          confirmPassword: data.confirmPassword,
+          businessName: data.businessName,
+        },
       });
-    } finally {
-      setIsLoading(false);
+      toast("Account successfully created");
+    } catch (error) {
+      // GraphQL errors are handled in onError callback
+      console.error("Signup error:", error);
     }
   };
 
@@ -70,33 +113,6 @@ const CreateAccount: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Name
-              </label>
-              <input
-                {...register("name", {
-                  required: "Name is required",
-                  minLength: {
-                    value: 2,
-                    message: "Name must be at least 2 characters long",
-                  },
-                })}
-                type="text"
-                id="name"
-                placeholder="Enter your fullname"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-700 focus:ring-pink-500 focus:border-pink-500"
-              />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
-
             <div>
               <label
                 htmlFor="email"

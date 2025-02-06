@@ -8,9 +8,9 @@ const STORE_FEED = gql`
     products(where: $where) {
       id
       name
-      image_url
+      imageUrl
       price
-      batch_quantity
+      batchQuantity
       description
     }
   }
@@ -58,7 +58,7 @@ const MyProductsTable = () => {
                 <tr key={product.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <img
-                      src={product.image_url}
+                      src={product.imageUrl}
                       alt={product.name}
                       className="w-16 h-16 object-cover rounded-md"
                     />
@@ -75,7 +75,7 @@ const MyProductsTable = () => {
                     ${product.price.toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {product.batch_quantity}
+                    {product.batchQuantity}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {product.category}

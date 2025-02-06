@@ -1,10 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import { Manufacturer } from "../types/manufacturer";
 import LeftArrow from "../components/ui/LeftArrow";
 import ShoppingCart from "../components/ui/ShoppingCart";
 import { BottomNav } from "../components/Layout";
+import Button from "../components/ui/Button";
 
 const MANUFACTURER_QUERY = gql`
   query Query {
@@ -36,7 +37,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
 
 const StoresPage: React.FC = () => {
   const { data, loading, error } = useQuery(MANUFACTURER_QUERY);
-
+  const navigate = useNavigate();
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
@@ -66,7 +67,10 @@ const StoresPage: React.FC = () => {
           <LeftArrow />
         </Link>
         <h1 className="flex-1 text-center text-lg font-medium mr-6">Stores</h1>
-        <ShoppingCart />
+        <div className="flex justify-center items-center gap-4">
+          <Button onClick={() => navigate("/signup")}>Signup</Button>
+          <ShoppingCart />
+        </div>
       </div>
 
       {/* Stores List */}
