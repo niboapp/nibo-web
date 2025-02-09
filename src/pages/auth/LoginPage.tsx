@@ -4,20 +4,9 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { LoginFormInputs } from "../../types/auth";
 import { authService } from "../../api/auth";
-import { useMutation, gql } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { toast } from "sonner";
-
-const LOGIN_MUTATION = gql`
-  mutation LogIn($email: String!, $password: String!) {
-    logIn(logInInput: { email: $email, password: $password }) {
-      token
-      user {
-        id
-        email
-      }
-    }
-  }
-`;
+import { LOGIN_MUTATION } from "../../qraphql/mutations";
 
 const LoginForm: React.FC = () => {
   const {

@@ -1,33 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import Store from "../types/stores";
 import MapComponent, { UserLocation } from "../components/MapComponent";
 import { Link, useParams } from "react-router-dom";
 import Button from "../components/ui/Button";
-
-const GET_LOCATIONS = gql`
-  query Locations {
-    locations {
-      latitude
-      longitude
-      id
-      city
-    }
-  }
-`;
-
-const GET_PRODUCT = gql`
-  query Query($where: ProductWhereUniqueInput!) {
-    product(where: $where) {
-      name
-      imageUrl
-      category
-      createdAt
-      batchQuantity
-    }
-  }
-`;
+import { GET_LOCATIONS, GET_PRODUCT } from "../qraphql/queries";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -56,7 +34,6 @@ export default function ProductPage() {
     skip: !id,
   });
 
-  // Update stores when locations data is fetched
   useEffect(() => {
     if (locationsData?.locations) {
       const storeLocations = locationsData.locations.map((location: any) => ({

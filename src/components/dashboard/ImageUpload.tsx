@@ -1,18 +1,23 @@
 import { useState } from "react";
 import { Upload } from "lucide-react";
 
-const ImageUpload = ({ onUploadSuccess }) => {
-  const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState(null);
+interface ImageUploadProps {
+  onUploadSuccess?: (url: string) => void;
+}
+
+const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess }) => {
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
-  const handleUpload = async (event) => {
-    const file = event.target.files[0];
+
+  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
 
     // Create preview
     const reader = new FileReader();
-    reader.onloadend = () => setPreview(reader.result);
+    reader.onloadend = () => setPreview(reader.result as string);
     reader.readAsDataURL(file);
 
     setUploading(true);
@@ -22,18 +27,21 @@ const ImageUpload = ({ onUploadSuccess }) => {
       // Create form data
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", `NIBO_UPLOAD`);
+      formData.append("upload_preset", "NIBO_UPLOAD");
 
-      const response = await fetch(`${import.meta.env.VITE_CLOUDINARY_URL}`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        import.meta.env.VITE_CLOUDINARY_URL as string,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Upload failed");
       }
 
-      const data = await response.json();
+      const data: { secure_url: string } = await response.json();
 
       if (onUploadSuccess) {
         onUploadSuccess(data.secure_url);
@@ -76,7 +84,7 @@ const ImageUpload = ({ onUploadSuccess }) => {
         {error && <p className="text-red-500 text-sm">{error}</p>}
         {success && (
           <p className="text-green-500 text-sm">
-            You have succesfully uploaded this image.
+            You have successfully uploaded this image.
           </p>
         )}
 

@@ -1,20 +1,8 @@
 import { PencilIcon, PlusIcon } from "lucide-react";
 import Product from "../../types/product";
 import { useNavigate } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
-
-const STORE_FEED = gql`
-  query Products($where: ProductWhereInput) {
-    products(where: $where) {
-      id
-      name
-      imageUrl
-      price
-      batchQuantity
-      description
-    }
-  }
-`;
+import { useQuery } from "@apollo/client";
+import { STORE_FEED } from "../../qraphql/queries";
 const MyProductsTable = () => {
   const navigate = useNavigate();
   const { data: myProducts, loading } = useQuery(STORE_FEED);

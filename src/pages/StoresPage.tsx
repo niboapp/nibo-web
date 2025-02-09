@@ -1,20 +1,12 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Manufacturer } from "../types/manufacturer";
 import LeftArrow from "../components/ui/LeftArrow";
 import ShoppingCart from "../components/ui/ShoppingCart";
 import { BottomNav } from "../components/Layout";
 import Button from "../components/ui/Button";
-
-const MANUFACTURER_QUERY = gql`
-  query Query {
-    manufacturers {
-      name
-    }
-  }
-`;
-
+import { MANUFACTURER_QUERY } from "../qraphql/queries";
 interface StoreCardProps {
   store: Manufacturer;
 }
