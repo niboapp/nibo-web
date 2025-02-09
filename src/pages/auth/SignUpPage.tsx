@@ -4,34 +4,9 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { SignupFormInputs } from "../../types/auth";
 import { authService } from "../../api/auth";
-import { useMutation, gql } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { toast } from "sonner";
-
-const SIGNUP_MUTATION = gql`
-  mutation SignUpManufacturer(
-    $email: String!
-    $password: String!
-    $confirmPassword: String!
-    $businessName: String!
-  ) {
-    signUpManufacturer(
-      signUpManufacturerInput: {
-        email: $email
-        password: $password
-        confirmPassword: $confirmPassword
-        businessName: $businessName
-        image: "rrr.com"
-      }
-    ) {
-      token
-      user {
-        id
-        email
-        businessName
-      }
-    }
-  }
-`;
+import { SIGNUP_MUTATION } from "../../qraphql/mutations";
 
 const CreateAccount: React.FC = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -76,7 +51,6 @@ const CreateAccount: React.FC = () => {
       });
       toast("Account successfully created");
     } catch (error) {
-      // GraphQL errors are handled in onError callback
       console.error("Signup error:", error);
     }
   };

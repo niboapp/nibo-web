@@ -18,6 +18,7 @@ const STORE_FEED = gql`
 const MyProductsTable = () => {
   const navigate = useNavigate();
   const { data: myProducts, loading } = useQuery(STORE_FEED);
+
   if (loading) {
     return (
       <div className="w-full flex justify-center items-center">loading...</div>
@@ -53,8 +54,8 @@ const MyProductsTable = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {myProducts &&
-              myProducts.map((product: Product) => (
+            {myProducts.products.length > 0 ? (
+              myProducts.products.map((product: Product) => (
                 <tr key={product.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <img
@@ -91,7 +92,12 @@ const MyProductsTable = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
+              ))
+            ) : (
+              <div className="items-center justify-center text-center">
+                <p className=""> You have no products currently.</p>
+              </div>
+            )}
           </tbody>
         </table>
       </div>

@@ -1,9 +1,24 @@
-import { Eye, EyeClosed } from "lucide-react";
 import React, { useState } from "react";
+import { Eye, EyeClosed } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { LoginFormInputs } from "../../types/auth";
 import { authService } from "../../api/auth";
+import { useMutation, gql } from "@apollo/client";
+import { toast } from "sonner";
+
+const LOGIN_MUTATION = gql`
+  mutation LogIn($email: String!, $password: String!) {
+    logIn(logInInput: { email: $email, password: $password }) {
+      token
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+
 const LoginForm: React.FC = () => {
   const {
     register,
@@ -13,21 +28,34 @@ const LoginForm: React.FC = () => {
   } = useForm<LoginFormInputs>();
 
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const [login, { loading: isLoading }] = useMutation(LOGIN_MUTATION, {
+    onCompleted: (data) => {
+      if (data.login.token) {
+        authService.setToken(data.login.token);
+        navigate("/dashboard");
+        toast("Successfully logged in");
+      }
+    },
+    onError: (error) => {
+      setError("root", {
+        type: "server",
+        message: error.message || "Invalid credentials",
+      });
+    },
+  });
+
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
-      setIsLoading(true);
-      await authService.login(data);
-      navigate("/dashboard");
-    } catch (error) {
-      setError("root", {
-        type: "server",
-        message: error instanceof Error ? error.message : "Invalid credentials",
+      await login({
+        variables: {
+          email: data.email,
+          password: data.password,
+        },
       });
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      console.error("Login error:", error);
     }
   };
 

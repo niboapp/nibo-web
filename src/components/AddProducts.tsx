@@ -6,27 +6,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import ImageUpload from "./ImageUpload";
-
-// Define the GraphQL mutation
-const CREATE_PRODUCT = gql`
-  mutation createProduct($createProductInput: CreateProductInput!) {
-    createProduct(createProductInput: $createProductInput) {
-      price
-      name
-      id
-      createdAt
-      updatedAt
-      description
-      category
-      imageUrl
-      batchNumber
-      serialNumber
-      batchQuantity
-      manufacturerId
-    }
-  }
-`;
+import ImageUpload from "./dashboard/ImageUpload";
+import { CREATE_PRODUCT } from "../qraphql/mutations";
 
 // Define the form schema with Zod
 const productSchema = z.object({

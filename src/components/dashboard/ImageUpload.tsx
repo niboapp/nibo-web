@@ -5,7 +5,7 @@ const ImageUpload = ({ onUploadSuccess }) => {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState<string | null>(null);
-
+  const [success, setSuccess] = useState<boolean>(false);
   const handleUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -38,6 +38,7 @@ const ImageUpload = ({ onUploadSuccess }) => {
       if (onUploadSuccess) {
         onUploadSuccess(data.secure_url);
       }
+      setSuccess(true);
     } catch (err) {
       setError("Failed to upload image. Please try again.");
       console.error("Upload error:", err);
@@ -73,6 +74,11 @@ const ImageUpload = ({ onUploadSuccess }) => {
         )}
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
+        {success && (
+          <p className="text-green-500 text-sm">
+            You have succesfully uploaded this image.
+          </p>
+        )}
 
         <p className="text-sm text-gray-500">
           {uploading ? "Uploading..." : "Supported formats: JPG, PNG, GIF"}

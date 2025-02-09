@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ResetPassword: React.FC = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
   const toggleConfirmPasswordVisibility = () =>
@@ -19,7 +21,10 @@ const ResetPassword: React.FC = () => {
       </div>
       <div className="flex p-3 justify-center min-h-screen">
         <div className="w-full max-w-md p-3 bg-white">
-          <button className="text-gray-500 mb-4 hover:text-gray-700 flex items-center">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-gray-500 mb-4 hover:text-gray-700 flex items-center"
+          >
             <ArrowLeft className="w-5 h-5 mr-1" />
           </button>
 
@@ -87,7 +92,7 @@ const ResetPassword: React.FC = () => {
               type="submit"
               className="w-full px-4 py-2 bg-pink-500 text-white font-semibold rounded-md shadow-sm hover:bg-pink-600"
             >
-              Create an Account
+              Reset Password
             </button>
           </form>
         </div>
