@@ -1,32 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from "react";
-import { UploadIcon } from "lucide-react";
+import { useState } from "react";
 import { toast, Toaster } from "sonner";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-
-// Define the GraphQL mutation
-const CREATE_PRODUCT = gql`
-  mutation createProduct($createProductInput: CreateProductInput!) {
-    createProduct(createProductInput: $createProductInput) {
-      price
-      name
-      id
-      createdAt
-      updatedAt
-      description
-      category
-      image_url
-      batch_no
-      serial_no
-      batch_quantity
-      manufacturerId
-    }
-  }
-`;
+import ImageUpload from "./dashboard/ImageUpload";
+import { CREATE_PRODUCT } from "../qraphql/mutations";
 
 // Define the form schema with Zod
 const productSchema = z.object({
@@ -34,15 +15,15 @@ const productSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
   price: z.string().min(1, "Price is required"),
   category: z.enum(["Antibiotics", "Painkillers", "Supplements"]),
-  batch_no: z
+  batchNumber: z
     .string()
     .min(1, "Batch number is required")
     .transform((value) => parseInt(value)),
-  batch_quantity: z
+  batchQuantity: z
     .string()
     .min(1, "Batch quantity is required")
     .transform((value) => parseInt(value)),
-  serial_no: z
+  serialNumber: z
     .string()
     .min(1, "Serial number is required")
     .transform((value) => parseInt(value)),
@@ -52,7 +33,7 @@ type ProductFormData = z.infer<typeof productSchema>;
 
 export default function AddProductPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<string | null>(null);
   const [createProduct] = useMutation(CREATE_PRODUCT);
   const navigate = useNavigate();
   const {
@@ -66,33 +47,30 @@ export default function AddProductPage() {
       description: "",
       price: "",
       category: "Antibiotics",
-      batch_no: 0,
-      batch_quantity: 0,
-      serial_no: undefined,
+      batchNumber: 0,
+      batchQuantity: 0,
+      serialNumber: undefined,
     },
   });
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-      setImageFile(file);
-    }
-  };
-
   const onSubmit = async (data: ProductFormData) => {
     try {
-      const image_url = "image.com"; // Placeholder URL
-      console.log("Submitted");
+      if (!imageFile) {
+        toast.error("Please upload an image before submitting.");
+        return;
+      }
+
+      // Ensure imageFile is a valid Cloudinary URL
+      const imageUrl = imageFile.startsWith("https://res.cloudinary.com/")
+        ? imageFile
+        : toast.error("Invalid image URL");
+
       const response = await createProduct({
         variables: {
           createProductInput: {
             ...data,
-            image_url,
+            imageUrl,
+            status: "AVAILABLE",
             manufacturerId: import.meta.env.VITE_MANUFACTURER_ID,
           },
         },
@@ -105,7 +83,6 @@ export default function AddProductPage() {
       toast.error("Failed to add product.");
     }
   };
-
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="mb-8">
@@ -155,21 +132,8 @@ export default function AddProductPage() {
                 </button>
               </div>
             ) : (
-              <div className="space-y-2">
-                <div className="flex items-center justify-center">
-                  <UploadIcon className="h-10 w-10 text-gray-400" />
-                </div>
-                <div className="flex text-sm text-gray-600 justify-center">
-                  <label className="relative cursor-pointer rounded-md font-medium text-pink-600 hover:text-pink-500">
-                    <span>Upload a file</span>
-                    <input
-                      type="file"
-                      className="sr-only"
-                      onChange={handleImageChange}
-                      accept="image/*"
-                    />
-                  </label>
-                </div>
+              <div className="space-y-2 flex items-center justify-center">
+                <ImageUpload onUploadSuccess={setImageFile} />
               </div>
             )}
           </div>
@@ -214,12 +178,14 @@ export default function AddProductPage() {
             </label>
             <input
               type="number"
-              {...register("batch_no")}
+              {...register("batchNumber")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
               placeholder="Enter batch number"
             />
-            {errors.batch_no && (
-              <p className="text-red-500 text-sm">{errors.batch_no.message}</p>
+            {errors.batchNumber && (
+              <p className="text-red-500 text-sm">
+                {errors.batchNumber.message}
+              </p>
             )}
           </div>
 
@@ -229,13 +195,13 @@ export default function AddProductPage() {
             </label>
             <input
               type="number"
-              {...register("batch_quantity")}
+              {...register("batchQuantity")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
               placeholder="Enter batch quantity"
             />
-            {errors.batch_quantity && (
+            {errors.batchQuantity && (
               <p className="text-red-500 text-sm">
-                {errors.batch_quantity.message}
+                {errors.batchQuantity.message}
               </p>
             )}
           </div>
@@ -246,12 +212,14 @@ export default function AddProductPage() {
             </label>
             <input
               type="number"
-              {...register("serial_no")}
+              {...register("serialNumber")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
               placeholder="Enter serial number"
             />
-            {errors.serial_no && (
-              <p className="text-red-500 text-sm">{errors.serial_no.message}</p>
+            {errors.serialNumber && (
+              <p className="text-red-500 text-sm">
+                {errors.serialNumber.message}
+              </p>
             )}
           </div>
         </div>

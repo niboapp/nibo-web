@@ -11,10 +11,10 @@ const GET_PRODUCT = gql`
   query Query($where: ProductWhereUniqueInput!) {
     product(where: $where) {
       name
-      image_url
+      imageUrl
       category
       createdAt
-      batch_quantity
+      batchQuantity
     }
   }
 `;
@@ -25,9 +25,9 @@ const GET_RELATED_PRODUCTS = gql`
     products(where: { category: $category }) {
       id
       name
-      image_url
+      imageUrl
       category
-      batch_quantity
+      batchQuantity
     }
   }
 `;
@@ -95,7 +95,7 @@ export const ProductDetails: React.FC = () => {
       <div className="p-4">
         <div className="relative bg-white rounded-lg shadow-sm">
           <img
-            src={product.image_url}
+            src={product.imageUrl}
             alt={product.name}
             className="w-full h-64 object-contain p-4"
           />
@@ -108,7 +108,7 @@ export const ProductDetails: React.FC = () => {
           <h2 className="text-xl font-medium">{product.name}</h2>
           <p className="text-sm text-gray-500">{product.category}</p>
           <p className="text-sm text-gray-500">
-            Batch Quantity: {product.batch_quantity}
+            Batch Quantity: {product.batchQuantity}
           </p>
           <p className="text-sm text-gray-500">
             Created: {new Date(product.createdAt).toLocaleDateString()}

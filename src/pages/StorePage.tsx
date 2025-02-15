@@ -11,7 +11,7 @@ const STORE_FEED = gql`
     products(where: $where) {
       id
       name
-      image_url
+      imageUrl
       category
       price
     }

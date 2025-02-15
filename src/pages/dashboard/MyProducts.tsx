@@ -1,23 +1,12 @@
 import { PencilIcon, PlusIcon } from "lucide-react";
 import Product from "../../types/product";
 import { useNavigate } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
-
-const STORE_FEED = gql`
-  query Products($where: ProductWhereInput) {
-    products(where: $where) {
-      id
-      name
-      image_url
-      price
-      batch_quantity
-      description
-    }
-  }
-`;
+import { useQuery } from "@apollo/client";
+import { STORE_FEED } from "../../qraphql/queries";
 const MyProductsTable = () => {
   const navigate = useNavigate();
   const { data: myProducts, loading } = useQuery(STORE_FEED);
+
   if (loading) {
     return (
       <div className="w-full flex justify-center items-center">loading...</div>
@@ -53,12 +42,12 @@ const MyProductsTable = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {myProducts &&
-              myProducts.map((product: Product) => (
+            {myProducts.products.length > 0 ? (
+              myProducts.products.map((product: Product) => (
                 <tr key={product.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <img
-                      src={product.image_url}
+                      src={product.imageUrl}
                       alt={product.name}
                       className="w-16 h-16 object-cover rounded-md"
                     />
@@ -75,7 +64,7 @@ const MyProductsTable = () => {
                     ${product.price.toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {product.batch_quantity}
+                    {product.batchQuantity}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {product.category}
@@ -91,7 +80,12 @@ const MyProductsTable = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
+              ))
+            ) : (
+              <div className="items-center justify-center text-center">
+                <p className=""> You have no products currently.</p>
+              </div>
+            )}
           </tbody>
         </table>
       </div>

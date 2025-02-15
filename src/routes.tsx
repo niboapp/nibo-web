@@ -15,7 +15,7 @@ import ErrorPage from "./pages/ErrorPage";
 import ProductList from "./pages/ProductList";
 import LoginForm from "./pages/auth/LoginPage";
 import Dashboard from "./pages/dashboard/Dashboard";
-import { DashboardLayout } from "./components/DashboardLayout";
+import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import MyProductsTable from "./pages/dashboard/MyProducts";
 import AccountPage from "./pages/Account";
 import Orders from "./pages/Orders";
