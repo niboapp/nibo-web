@@ -29,18 +29,19 @@ export const SIGNUP_MUTATION = gql`
 export const CREATE_PRODUCT = gql`
   mutation createProduct($createProductInput: CreateProductInput!) {
     createProduct(createProductInput: $createProductInput) {
-      price
-      name
       id
+      name
+      description
+      price
+      category
+      batchNumber
+      batchQuantity
+      serialNumber
+      status
+      imageUrl
+      manufacturerId
       createdAt
       updatedAt
-      description
-      category
-      imageUrl
-      batchNumber
-      serialNumber
-      batchQuantity
-      manufacturerId
     }
   }
 `;

@@ -16,7 +16,7 @@ export const STORE_FEED = gql`
 export const MANUFACTURER_QUERY = gql`
   query Query {
     manufacturers {
-      name
+      slug
     }
   }
 `;

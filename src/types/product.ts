@@ -13,6 +13,8 @@ interface Product {
   ratings: number;
   reviews: number;
   quantityBought: number;
+  barcode: string;
+  batchNumber: number;
 }
 
 export default Product;
