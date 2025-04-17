@@ -1,43 +1,40 @@
 import { gql } from "@apollo/client";
 
 export const SIGNUP_MUTATION = gql`
-  mutation SignUpManufacturer(
-    $email: String!
-    $password: String!
-    $confirmPassword: String!
-    $businessName: String!
-  ) {
-    signUpManufacturer(
-      signUpManufacturerInput: {
-        email: $email
-        password: $password
-        confirmPassword: $confirmPassword
-        businessName: $businessName
-        image: "rrr.com"
-      }
-    ) {
-      token
+  mutation signUp($signUpManufacturerInput: SignUpManufacturerInput!) {
+    signUp(signUpManufacturerInput: $signUpManufacturerInput) {
       user {
         id
         email
-        businessName
+        manufacturers {
+          id
+        }
       }
+      token
+    }
+  }
+`;
+
+export const CREATE_STORE_MUTATION = gql`
+  mutation addRetailer($createStoreInput: CreateStoreInput!) {
+    addRetailer(createStoreInput: $createStoreInput) {
+      id
+      name
+      location
+      contact
     }
   }
 `;
 
 export const CREATE_PRODUCT = gql`
-  mutation createProduct($createProductInput: CreateProductInput!) {
+  mutation Mutation($createProductInput: CreateProductInput!) {
     createProduct(createProductInput: $createProductInput) {
       id
       name
       description
-      price
-      category
+      retailPrice
       batchNumber
-      batchQuantity
-      serialNumber
-      status
+      barCode
       imageUrl
       manufacturerId
       createdAt
@@ -57,3 +54,38 @@ export const LOGIN_MUTATION = gql`
     }
   }
 `;
+
+export const CREATE_RETAILER_MUTATION = gql`
+  mutation Mutation($createStoreInputs: [CreateStoreInput!]!) {
+    addMultipleRetailer(createStoreInputs: $createStoreInputs) {
+      location {
+        fullAddress
+        id
+      }
+      name
+    }
+  }
+`;
+
+export const REGISTER_BUSINESS = gql`
+  mutation CreateManufacturer(
+    $createManufacturerInput: CreateManufacturerInput!
+  ) {
+    createManufacturer(createManufacturerInput: $createManufacturerInput) {
+      id
+      businessName
+      brandStoreName
+      location {
+        id
+      }
+      industry
+    }
+  }
+`;
+
+export interface CreateStoreInput {
+  name: string;
+  manufacturerId: string;
+  fullAddress: string;
+  contact: string;
+}

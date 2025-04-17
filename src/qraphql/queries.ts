@@ -1,13 +1,13 @@
 import { gql } from "@apollo/client";
 
-export const STORE_FEED = gql`
+export const GET_PRODUCTS = gql`
   query Products($where: ProductWhereInput) {
     products(where: $where) {
       id
       name
       imageUrl
-      price
-      batchQuantity
+      retailPrice
+      quantity
       description
     }
   }
@@ -16,7 +16,7 @@ export const STORE_FEED = gql`
 export const MANUFACTURER_QUERY = gql`
   query Query {
     manufacturers {
-      slug
+      brandStoreName
     }
   }
 `;

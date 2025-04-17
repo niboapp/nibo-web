@@ -19,9 +19,11 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const [login, { loading: isLoading }] = useMutation(LOGIN_MUTATION, {
     onCompleted: (data) => {
-      if (data.login.token) {
-        authService.setToken(data.login.token);
-        navigate("/dashboard");
+      if (data.logIn.token) {
+        authService.setToken(data.logIn.token);
+        localStorage.removeItem("userId");
+        localStorage.setItem("userId", data.logIn.user.id);
+        navigate("/dashboard/main");
         toast("Successfully logged in");
       }
     },
@@ -56,7 +58,10 @@ const LoginForm: React.FC = () => {
           Welcome to Nibo! Come on in to continue making your products more
           accessible.
         </p>
-
+        <p className="font-light tracking-tighter">
+          Don't have an account{" "}
+          <button onClick={() => navigate("/signup")}>Sign Up</button>
+        </p>
         {errors.root && (
           <div className="mb-4 p-3 text-sm text-red-500 bg-red-50 rounded-md">
             {errors.root.message}

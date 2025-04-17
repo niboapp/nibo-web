@@ -15,11 +15,11 @@ const CreateAccount: React.FC = () => {
 
   const [signup, { loading: isLoading }] = useMutation(SIGNUP_MUTATION, {
     onCompleted: (data) => {
-      console.log(data);
-      if (data.signUpManufacturer.token) {
-        authService.setToken(data.signUpManufacturer.token);
-        navigate("/dashboard");
+      if (data?.signUp?.token) {
+        authService.setToken(data.signUp.token);
+        localStorage.setItem("userId", data.signUp.user.id);
       }
+      navigate("/dashboard/main");
     },
     onError: (error) => {
       setError("root", {
@@ -43,10 +43,13 @@ const CreateAccount: React.FC = () => {
     try {
       await signup({
         variables: {
-          email: data.email,
-          password: data.password,
-          confirmPassword: data.confirmPassword,
-          businessName: data.businessName,
+          signUpManufacturerInput: {
+            email: data.email,
+            password: data.password,
+            confirmPassword: data.confirmPassword,
+            name: data.businessName,
+            image: "rrr.com",
+          },
         },
       });
       toast("Account successfully created");
