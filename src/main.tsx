@@ -14,6 +14,7 @@ import {
   createHttpLink,
   InMemoryCache,
 } from "@apollo/client";
+import ManufacturerProvider from "./context/ManufacturerContext";
 
 const httpLink = createHttpLink({
   uri: import.meta.env.VITE_BASE_API_URL!,
@@ -32,7 +33,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <ModalProvider>
             <SearchProvider>
               <CartProvider>
-                <RouterProvider router={router} />
+                <ManufacturerProvider>
+                  <RouterProvider router={router} />
+                </ManufacturerProvider>
               </CartProvider>
             </SearchProvider>
           </ModalProvider>

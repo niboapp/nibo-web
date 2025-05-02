@@ -1,14 +1,10 @@
-import { NavLink, Outlet } from "react-router-dom";
-import { LayoutDashboard, Package, User, Plus } from "lucide-react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { LayoutDashboard, Package, User, Plus, LogOut } from "lucide-react";
+import Button from "../ui/Button";
+import { authService } from "../../api/auth";
 
 export const DashboardLayout: React.FC = () => {
-  // NOTE: There should be a log out button.
-  // const navigate = useNavigate();
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem("token");
-  //   navigate("/");
-  // };
+  const navigate = useNavigate();
 
   return (
     <div className="flex">
@@ -85,23 +81,23 @@ export const DashboardLayout: React.FC = () => {
                 <span className="text-base">Add Retailers</span>
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                to="/dashboard/add-business"
-                className={({ isActive }) =>
-                  `w-full flex items-center py-3 px-4 rounded-md justify-center ${
-                    isActive
-                      ? "bg-pink-500 text-white"
-                      : "bg-gray-200 text-black"
-                  }`
-                }
-              >
-                <Plus size={18} className="mr-2" />
-                <span className="text-base">Add Business</span>
-              </NavLink>
-            </li>
           </ul>
         </nav>
+        <div className="p-5">
+          <Button
+            onClick={() => {
+              authService.clearToken();
+              authService.logout();
+              navigate("/login");
+            }}
+            className={
+              "w-full flex items-center py-3 px-4 rounded-md justify-center bg-pink-500 text-black"
+            }
+          >
+            <LogOut size={18} className="mr-2" />
+            <span className="text-base">Logout</span>
+          </Button>
+        </div>
       </div>
 
       {/* Main Content */}

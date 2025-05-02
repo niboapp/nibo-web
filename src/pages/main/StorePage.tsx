@@ -1,22 +1,12 @@
 import { NavLink, Link, useParams } from "react-router-dom";
-import { ProductCard } from "../components/ProductCard";
+import { ProductCard } from "../../components/ProductCard";
 import { FaSearch, FaShoppingCart } from "react-icons/fa";
-import { useSearch } from "../context/SearchContext";
+import { useSearch } from "../../context/SearchContext";
 import { Heart } from "lucide-react";
-import Promo from "../assets/promo1.jpg";
-import { gql, useQuery } from "@apollo/client";
-import Product from "../types/product";
-const STORE_FEED = gql`
-  query Products($where: ProductWhereInput) {
-    products(where: $where) {
-      id
-      name
-      imageUrl
-      category
-      price
-    }
-  }
-`;
+import { useQuery } from "@apollo/client";
+import Product from "../../types/product";
+import { STORE_FEED } from "../../qraphql/queries";
+
 export const StoreDetails: React.FC = () => {
   const { storeName } = useParams<{ storeName: string }>();
   console.log(storeName);
@@ -83,7 +73,7 @@ export const StoreDetails: React.FC = () => {
         </div>
         <div className="w-full p-3 rounded-lg">
           <img
-            src={Promo}
+            src={"/promo1.jpg"}
             className="w-full rounded-lg h-28 object-cover lg:h-60"
           />
         </div>

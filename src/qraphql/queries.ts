@@ -13,6 +13,18 @@ export const GET_PRODUCTS = gql`
   }
 `;
 
+export const STORE_FEED = gql`
+  query Products($where: ProductWhereInput) {
+    products(where: $where) {
+      id
+      name
+      imageUrl
+      category
+      price
+    }
+  }
+`;
+
 export const MANUFACTURER_QUERY = gql`
   query Query {
     manufacturers {

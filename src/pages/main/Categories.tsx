@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
-import { BottomNav } from "../components/Layout";
-import LeftArrow from "../components/ui/LeftArrow";
-import ShoppingCart from "../components/ui/ShoppingCart";
-
-
+import { BottomNav } from "../../components/Layout";
+import LeftArrow from "../../components/ui/LeftArrow";
+import ShoppingCart from "../../components/ui/ShoppingCart";
 
 // const getCategoryIcon = (category: string) => {
 //   switch (category.toLowerCase()) {
@@ -42,8 +40,13 @@ export const Categories: React.FC = () => {
 
       {/* Categories Grid */}
       <div className="flex items-center justify-center flex-col gap-7 pt-5 px-3">
-        <p>With this feature, you can confirm the authenticity of the product you purchased.</p>
-        <p className="text-left w-full flex lg:justify-center justify-start">Feature to be released soon...</p>
+        <p>
+          With this feature, you can confirm the authenticity of the product you
+          purchased.
+        </p>
+        <p className="text-left w-full flex lg:justify-center justify-start">
+          Feature to be released soon...
+        </p>
       </div>
       {/*Bottom Nav*/}
       <BottomNav />

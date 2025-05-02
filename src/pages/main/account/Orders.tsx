@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import Image from "../components/ui/Image";
-import products from "../data/products";
-import Product from "../types/product";
+import { useState } from "react";
+import Image from "../../../components/ui/Image";
 import { Heart } from "lucide-react";
+import { useQuery } from "@apollo/client";
+import { GET_PRODUCTS } from "../../../qraphql/queries";
 
 export default function Orders() {
   const [tab, setTab] = useState("active");
+  const { data: products } = useQuery(GET_PRODUCTS);
 
   return (
     <div className="max-w-2xl mx-auto p-4">
@@ -37,7 +38,7 @@ export default function Orders() {
       <div className="space-y-4 w-full">
         {tab === "active" && (
           <div className="space-y-4 w-full">
-            {products.map((product: Product) => (
+            {products.map((product: any) => (
               <div
                 key={product.id}
                 className="flex  w-full justify-between bg-white rounded-lg p-4"

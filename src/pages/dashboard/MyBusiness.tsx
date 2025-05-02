@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { REGISTER_BUSINESS } from "../../qraphql/mutations";
 import { useNavigate } from "react-router-dom";
+import SuccessModal from "../../components/dashboard/business/SuccessModal";
+import { useManufacturer } from "../../context/ManufacturerContext";
+import { toast } from "sonner";
 
 interface BusinessFormData {
   businessName: string;
@@ -52,6 +55,8 @@ const BusinessRegistrationForm: React.FC = () => {
     defaultValues,
   });
   const navigate = useNavigate();
+  const [ismodalOpen, setisModalOpen] = useState(false);
+  const { saveManufacturer } = useManufacturer();
 
   const selectedCategories = watch("productCategory");
 
@@ -67,9 +72,11 @@ const BusinessRegistrationForm: React.FC = () => {
     REGISTER_BUSINESS,
     {
       onCompleted: (data) => {
-        console.log("Business registered successfully:", data);
+        toast("Your business has been created successfully ");
+        console.log(data);
+        saveManufacturer(data?.data?.id);
+        setisModalOpen(true);
         reset(defaultValues);
-        navigate("/dashboard/main");
       },
       onError: (error) => {
         console.error("Error registering business:", error);
@@ -292,6 +299,14 @@ const BusinessRegistrationForm: React.FC = () => {
           </button>
         </div>
       </form>
+
+      {/* Successful Business Registration Modal */}
+      {ismodalOpen && (
+        <SuccessModal
+          onClose={() => navigate("/dashboard/main")}
+          onAddProduct={() => navigate("/dashboard/add-product")}
+        />
+      )}
     </div>
   );
 };

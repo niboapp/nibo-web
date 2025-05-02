@@ -1,13 +1,13 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import LeftArrow from "../components/ui/LeftArrow";
-import ShoppingCart from "../components/ui/ShoppingCart";
-import { BottomNav } from "../components/Layout";
-import Button from "../components/ui/Button";
-import { MANUFACTURER_QUERY } from "../qraphql/queries";
+import LeftArrow from "../../components/ui/LeftArrow";
+import ShoppingCart from "../../components/ui/ShoppingCart";
+import { BottomNav } from "../../components/Layout";
+import Button from "../../components/ui/Button";
+import { MANUFACTURER_QUERY } from "../../qraphql/queries";
 
-const StoreCard = ({ store }) => {
+const StoreCard = ({ store }: { store: any }) => {
   return (
     <Link
       to={`/${encodeURIComponent(store.brandStoreName.replace(" ", "-"))}`}
@@ -62,8 +62,6 @@ const StoresPage: React.FC = () => {
           <ShoppingCart />
         </div>
       </div>
-
-      {/* Stores List */}
       {error ? (
         <div className="text-center py-12">
           <h3 className="text-lg font-medium text-red-600 mb-2">
@@ -93,7 +91,6 @@ const StoresPage: React.FC = () => {
         </div>
       )}
 
-      {/* Bottom Navigation */}
       <BottomNav />
     </div>
   );

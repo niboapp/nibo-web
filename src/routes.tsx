@@ -1,22 +1,21 @@
 import { createBrowserRouter } from "react-router-dom";
 import "./index.css";
 // import HomePage from "./pages/HomePage";
-import Categories from "./pages/Categories";
-import Help from "./pages/Help";
-import products from "./data/products";
-import { StoreDetails } from "./pages/StorePage";
-import StoresPage from "./pages/StoresPage";
-import Cart from "./pages/Cart";
-import Product from "./pages/Product";
+import Categories from "./pages/main/Categories";
+import Help from "./pages/main/Help";
+import { StoreDetails } from "./pages/main/StorePage";
+import StoresPage from "./pages/main/StoresPage";
+import Cart from "./pages/main/Cart";
+import Product from "./pages/main/Product";
 import { ProductDetails } from "./components/ProductDetails";
 import ErrorPage from "./pages/ErrorPage";
-import ProductList from "./pages/ProductList";
+import ProductList from "./pages/main/ProductList";
 import LoginForm from "./pages/auth/LoginPage";
 import Dashboard from "./pages/dashboard/Dashboard";
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import MyProductsTable from "./pages/dashboard/products/MyProducts";
-import AccountPage from "./pages/Account";
-import Orders from "./pages/Orders";
+import AccountPage from "./pages/main/account/Account";
+import Orders from "./pages/main/account/Orders";
 import AddProductPage from "./pages/dashboard/products/AddProducts";
 import AuthPage from "./pages/auth/Welcome";
 import CreateAccount from "./pages/auth/SignUpPage";
@@ -30,11 +29,6 @@ import BusinessRegistrationForm from "./pages/dashboard/MyBusiness";
 import AddRetailerCSV from "./pages/dashboard/retailers/AddRetailerCSV";
 
 export const router = createBrowserRouter([
-  // {
-  //   path: "/",
-  //   element: <Layout />,
-  //
-  // },
   { path: "/", element: <StoresPage />, errorElement: <ErrorPage /> },
   { path: "help", element: <Help /> },
   {
@@ -103,6 +97,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "/categories/:category",
-    element: <ProductList products={products} />,
+    element: <ProductList />,
   },
 ]);
