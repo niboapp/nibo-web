@@ -26,16 +26,16 @@ const AddRetailerCSV = () => {
 export default AddRetailerCSV;
 
 const FileUploadForm = () => {
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<any>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: any) => {
     if (e.target.files[0]) {
       setFile(e.target.files[0]);
     }
   };
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: any) => {
     e.preventDefault();
     setIsDragging(true);
   };
@@ -44,7 +44,7 @@ const FileUploadForm = () => {
     setIsDragging(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: any) => {
     e.preventDefault();
     setIsDragging(false);
 
@@ -53,7 +53,7 @@ const FileUploadForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     console.log("Uploading file:", file);
   };

@@ -11,7 +11,7 @@ export default function AddProductPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<string | null>(null);
   const [createProduct, { loading: isLoading }] = useMutation(CREATE_PRODUCT, {
-    onCompleted: (data) => {
+    onCompleted: () => {
       toast.success("Your product has been added successfully");
       navigate("/dashboard/myproducts");
     },
@@ -49,7 +49,7 @@ export default function AddProductPage() {
     setValue("imageUrl", imageUrl);
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     const id = localStorage.getItem("userId");
     try {
       if (!imageFile) {
@@ -67,7 +67,7 @@ export default function AddProductPage() {
         batchNumber: data.batchNumber,
         manufactureDate: data.manufactureDate,
         expiryDate: data.expiryDate,
-        manufacturerId: "cm9kezc110003qu0kzyfage2x",
+        manufacturerId: id,
       };
 
       await createProduct({

@@ -1,6 +1,7 @@
 import Store from "./stores";
 
 interface Product {
+  product: any;
   retailPrice: string;
   id: string;
   name: string;

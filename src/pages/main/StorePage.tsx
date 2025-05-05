@@ -11,8 +11,8 @@ export const StoreDetails: React.FC = () => {
   const { storeName } = useParams<{ storeName: string }>();
   console.log(storeName);
   const { searchTerm, setSearchTerm } = useSearch();
-  const { data, loading } = useQuery(STORE_FEED);
-  console.log(data);
+  const { data: myProducts, loading } = useQuery(STORE_FEED);
+  console.log(myProducts, "My products.");
 
   if (loading) return <div>Loading...</div>;
 
@@ -57,7 +57,9 @@ export const StoreDetails: React.FC = () => {
           </div>
 
           <div className="text-center">
-            <p className="text-lg font-semibold text-gray-900">821</p>
+            <p className="text-lg font-semibold text-gray-900">
+              {myProducts.products.length}
+            </p>
             <p className="text-sm text-gray-500">Products</p>
           </div>
 
@@ -90,7 +92,7 @@ export const StoreDetails: React.FC = () => {
 
       {/* Store Products */}
       <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3 lg:grid-cols-4">
-        {data.products.map((product: Product) => (
+        {myProducts.products.map((product: Product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

@@ -37,8 +37,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product?.name}
           </h3>
           <div className="flex items-baseline justify-between">
-            <span className="text-sm text-gray-500">₦{product?.price}</span>
-            <span className="text-xs text-gray-400">{product?.category}</span>
+            <span className="text-sm text-gray-500">
+              ₦{product?.retailPrice}
+            </span>
+            <span className="text-xs text-gray-400">
+              {product?.product?.productCategory[0]}
+            </span>
           </div>
         </div>
       </div>

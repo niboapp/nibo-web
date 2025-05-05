@@ -12,9 +12,8 @@ const GET_PRODUCT = gql`
     product(where: $where) {
       name
       imageUrl
-      category
       createdAt
-      batchQuantity
+      quantity
     }
   }
 `;
@@ -26,8 +25,7 @@ const GET_RELATED_PRODUCTS = gql`
       id
       name
       imageUrl
-      category
-      batchQuantity
+      quantity
     }
   }
 `;
