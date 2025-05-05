@@ -108,10 +108,6 @@ const LoginForm: React.FC = () => {
               type={showPassword ? "text" : "password"}
               {...register("password", {
                 required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters",
-                },
               })}
               className={`mt-1 block w-full border rounded p-2 ${
                 errors.password ? "border-red-500" : "border-gray-300"

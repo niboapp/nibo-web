@@ -5,12 +5,31 @@ import { useMutation } from "@apollo/client";
 import { CREATE_RETAILER_MUTATION } from "../../../qraphql/mutations";
 import { toast } from "sonner";
 
+interface Retailer {
+  name: string;
+  fullAddress: string;
+  contact: string;
+}
+
+interface CreateRetailerResponse {
+  createStores: {
+    id: string;
+    name: string;
+    fullAddress: string;
+    contact: string;
+  }[];
+}
+
 const AddRetailerForm = () => {
   const navigate = useNavigate();
-  const [retailers, setRetailers] = useState([
+  const [retailers, setRetailers] = useState<Retailer[]>([
     { name: "", fullAddress: "", contact: "" },
   ]);
-  const [addRetailers, { loading }] = useMutation(CREATE_RETAILER_MUTATION, {
+
+  const [addRetailers, { loading }] = useMutation<
+    CreateRetailerResponse,
+    { createStoreInputs: (Retailer & { manufacturerId: string })[] }
+  >(CREATE_RETAILER_MUTATION, {
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -22,7 +41,11 @@ const AddRetailerForm = () => {
     },
   });
 
-  const handleChange = (index, field, value) => {
+  const handleChange = (
+    index: number,
+    field: keyof Retailer,
+    value: string
+  ) => {
     const updatedRetailers = [...retailers];
     updatedRetailers[index][field] = value;
     setRetailers(updatedRetailers);
@@ -32,13 +55,13 @@ const AddRetailerForm = () => {
     setRetailers([...retailers, { name: "", fullAddress: "", contact: "" }]);
   };
 
-  const removeRetailerRow = (index) => {
+  const removeRetailerRow = (index: number) => {
     if (retailers.length === 1) return;
     const updatedRetailers = retailers.filter((_, i) => i !== index);
     setRetailers(updatedRetailers);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -46,13 +69,15 @@ const AddRetailerForm = () => {
 
       if (!manufacturerId) {
         console.error("Manufacturer ID not found in localStorage");
+        toast.error("User ID not found. Please log in again.");
         return;
       }
+
       const createStoreInputs = retailers.map((retailer) => ({
         name: retailer.name,
         fullAddress: retailer.fullAddress,
         contact: retailer.contact,
-        manufacturerId: "cm9kezc110003qu0kzyfage2x",
+        manufacturerId,
       }));
 
       const { data } = await addRetailers({
@@ -62,7 +87,7 @@ const AddRetailerForm = () => {
       });
 
       console.log("Retailers added successfully:", data);
-
+      toast.success("Retailers added successfully!");
       navigate("/dashboard/retailers");
     } catch (error) {
       console.error("Error adding retailers:", error);
@@ -73,7 +98,12 @@ const AddRetailerForm = () => {
   return (
     <div className="flex flex-col max-w-4xl mx-auto px-4 py-6">
       <div className="flex items-center mb-4">
-        <button onClick={() => navigate(-1)} className="mr-4">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="mr-4"
+          aria-label="Go back"
+        >
           <ChevronLeft size={24} />
         </button>
         <div>
@@ -146,6 +176,7 @@ const AddRetailerForm = () => {
                         type="button"
                         onClick={addRetailerRow}
                         className="flex items-center justify-center w-6 h-6 rounded-full bg-pink-500 text-white hover:bg-pink-600"
+                        aria-label="Add retailer"
                       >
                         <Plus size={16} />
                       </button>
@@ -155,6 +186,7 @@ const AddRetailerForm = () => {
                         onClick={() => removeRetailerRow(index)}
                         className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-300 text-gray-600 hover:bg-gray-400"
                         disabled={retailers.length === 1}
+                        aria-label="Remove retailer"
                       >
                         <Minus size={16} />
                       </button>

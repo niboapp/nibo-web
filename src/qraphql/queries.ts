@@ -19,8 +19,10 @@ export const STORE_FEED = gql`
       id
       name
       imageUrl
-      category
-      price
+      product {
+        productCategory
+      }
+      retailPrice
     }
   }
 `;
@@ -39,7 +41,9 @@ export const GET_LOCATIONS = gql`
       latitude
       longitude
       id
-      city
+      store {
+        name
+      }
     }
   }
 `;
@@ -49,9 +53,11 @@ export const GET_PRODUCT = gql`
     product(where: $where) {
       name
       imageUrl
-      category
+      product {
+        productCategory
+      }
       createdAt
-      batchQuantity
+      quantity
     }
   }
 `;
