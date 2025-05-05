@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import Store from "../types/stores";
-import MapComponent, { UserLocation } from "../components/MapComponent";
+import Store from "../../types/stores";
+import MapComponent, { UserLocation } from "../../components/MapComponent";
 import { Link, useParams } from "react-router-dom";
-import Button from "../components/ui/Button";
-import { GET_LOCATIONS, GET_PRODUCT } from "../qraphql/queries";
+import Button from "../../components/ui/Button";
+import { GET_LOCATIONS, GET_PRODUCT } from "../../qraphql/queries";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();

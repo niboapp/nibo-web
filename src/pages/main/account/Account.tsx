@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FaEnvelope,
   FaShoppingBag,
@@ -8,9 +7,9 @@ import {
   FaMapMarkerAlt,
   FaLock,
 } from "react-icons/fa";
-import { BottomNav } from "../components/Layout";
+import { BottomNav } from "../../../components/Layout";
 import { Link } from "react-router-dom";
-import ShoppingCart from "../components/ui/ShoppingCart";
+import ShoppingCart from "../../../components/ui/ShoppingCart";
 import { ChevronRight } from "lucide-react";
 import { gql, useQuery } from "@apollo/client";
 const MANUFACTURER_QUERY = gql`
@@ -21,6 +20,7 @@ const MANUFACTURER_QUERY = gql`
   }
 `;
 
+//NOTE: Update Account page graphql query to only show products from a specific manufacturer ID
 const AccountPage = () => {
   const menuItems = [
     { icon: <FaEnvelope />, label: "Messages", link: "/messages" },
@@ -58,9 +58,6 @@ const AccountPage = () => {
           </svg>
         </Link>
         <h1 className="text-lg font-semibold text-gray-800">My Account</h1>
-        <button className="text-gray-600 text-xl">
-          <span>Log Out</span>
-        </button>
         <ShoppingCart />
       </header>
 

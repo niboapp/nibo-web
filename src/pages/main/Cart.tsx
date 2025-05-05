@@ -1,15 +1,11 @@
-import { useCart } from "../context/CartContext";
-import {
-  ArrowLeft,
-  ShoppingBag,
-  Trash2,
-  MessageCircle,
-} from "lucide-react";
+import { useCart } from "../../context/CartContext";
+import { ArrowLeft, ShoppingBag, Trash2, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useCallback, useEffect, } from "react";
-import products from "../data/products";
-import { ProductCard } from "../components/ProductCard";
-import { setItem } from "../utils/localStorage";
+import { useCallback, useEffect } from "react";
+import { ProductCard } from "../../components/ProductCard";
+import { setItem } from "../../utils/localStorage";
+import { useQuery } from "@apollo/client";
+import { GET_PRODUCTS } from "../../qraphql/queries";
 const CartPage = () => {
   const {
     cartItems,
@@ -19,11 +15,11 @@ const CartPage = () => {
     removeItem,
   } = useCart();
   const navigate = useNavigate();
-
+  const { data: products } = useQuery(GET_PRODUCTS);
   useEffect(() => {
     const item = cartItems;
-    setItem("cart", item)
-  }, [cartItems])
+    setItem("cart", item);
+  }, [cartItems]);
 
   const handleBackClick = useCallback(() => {
     navigate(-1);
@@ -70,15 +66,15 @@ const CartPage = () => {
         <h2 className="text-lg mb-4">Cart</h2>
         <div className="space-y-4">
           {cartItems.map((item) => (
-            <div key={item.id} className="flex gap-4">
+            <div key={item?.id} className="flex gap-4">
               <img
-                src={item.imageUrl}
-                alt={item.name}
+                src={item?.imageUrl}
+                alt={item?.name}
                 className="w-20 h-20 object-cover rounded-lg"
               />
               <div className="flex-1">
-                <span className="text-sm text-gray-500">{item.category}</span>
-                <h3 className="font-medium">{item.name}</h3>
+                <span className="text-sm text-gray-500">{item?.category}</span>
+                <h3 className="font-medium">{item?.name}</h3>
                 <p className="text-sm text-gray-500">
                   {item.store && item.store[0]?.name}
                 </p>
@@ -102,7 +98,10 @@ const CartPage = () => {
                 <div className="flex flex-col items-end">
                   <span className="font-medium">₦{item.price}</span>
                 </div>
-                <button className="text-red-500" onClick={() => removeItem(item.id)}>
+                <button
+                  className="text-red-500"
+                  onClick={() => removeItem(item.id)}
+                >
                   <Trash2 className="w-5 h-5" />
                 </button>
               </div>
@@ -120,7 +119,10 @@ const CartPage = () => {
             <button className="p-3 rounded-lg border">
               <MessageCircle className="w-5 h-5" />
             </button>
-            <button className="flex-1 bg-pink-500 text-white py-3 px-4 rounded-lg font-medium" onClick={handleCheckout}>
+            <button
+              className="flex-1 bg-pink-500 text-white py-3 px-4 rounded-lg font-medium"
+              onClick={handleCheckout}
+            >
               Checkout ₦{subtotal}
             </button>
           </div>
@@ -131,15 +133,16 @@ const CartPage = () => {
       <div className="p-4 mt-4">
         <h2 className="text-lg mb-4">Retailed Products</h2>
         <div className="grid grid-cols-3 gap-4">
-        {products.slice(0, 7)
-    .filter((product) =>
-      cartItems.some((item) => item.category === product.category)
-    )
-    .map((product) => (
-      <div key={product.id}>
-        <ProductCard product={product}/>
-      </div>
-    ))}
+          {products
+            .slice(0, 7)
+            .filter((product: any) =>
+              cartItems.some((item) => item.category === product.category)
+            )
+            .map((product: any) => (
+              <div key={product.id}>
+                <ProductCard product={product} />
+              </div>
+            ))}
         </div>
       </div>
     </div>

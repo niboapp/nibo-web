@@ -1,7 +1,7 @@
 import { FaEnvelope, FaShoppingBag } from "react-icons/fa";
-import { BottomNav } from "../components/Layout";
+import { BottomNav } from "../../components/Layout";
 import { Link } from "react-router-dom";
-import ShoppingCart from "../components/ui/ShoppingCart";
+import ShoppingCart from "../../components/ui/ShoppingCart";
 
 export default function Help() {
   const menuItems = [

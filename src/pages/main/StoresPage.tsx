@@ -1,28 +1,26 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { Manufacturer } from "../types/manufacturer";
-import LeftArrow from "../components/ui/LeftArrow";
-import ShoppingCart from "../components/ui/ShoppingCart";
-import { BottomNav } from "../components/Layout";
-import Button from "../components/ui/Button";
-import { MANUFACTURER_QUERY } from "../qraphql/queries";
-interface StoreCardProps {
-  store: Manufacturer;
-}
+import LeftArrow from "../../components/ui/LeftArrow";
+import ShoppingCart from "../../components/ui/ShoppingCart";
+import { BottomNav } from "../../components/Layout";
+import Button from "../../components/ui/Button";
+import { MANUFACTURER_QUERY } from "../../qraphql/queries";
 
-const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
+const StoreCard = ({ store }: { store: any }) => {
   return (
     <Link
-      to={`/${encodeURIComponent(store.name.replace(" ", "-"))}`}
+      to={`/${encodeURIComponent(store.brandStoreName.replace(" ", "-"))}`}
       className="flex flex-col items-center p-4 bg-gray-50 rounded-lg shadow-sm space-y-2 hover:bg-gray-100 transition-transform transform hover:scale-105"
     >
       <img
-        src={store.name || "/placeholder-image.png"}
-        alt={store.name}
+        src={store.brandStoreName || "/placeholder-image.png"}
+        alt={store.brandStoreName}
         className="h-16 w-16 object-cover rounded-full"
       />
-      <span className="text-sm font-medium text-gray-700">{store.name}</span>
+      <span className="text-sm font-medium text-gray-700">
+        {store.brandStoreName}
+      </span>
     </Link>
   );
 };
@@ -64,8 +62,6 @@ const StoresPage: React.FC = () => {
           <ShoppingCart />
         </div>
       </div>
-
-      {/* Stores List */}
       {error ? (
         <div className="text-center py-12">
           <h3 className="text-lg font-medium text-red-600 mb-2">
@@ -76,8 +72,11 @@ const StoresPage: React.FC = () => {
       ) : (
         <div className="py-6 px-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
           {manufacturers.length > 0 ? (
-            manufacturers.map((manufacturer: Manufacturer) => (
-              <StoreCard key={manufacturer.name} store={manufacturer} />
+            manufacturers.map((manufacturer: any) => (
+              <StoreCard
+                key={manufacturer.brandStoreName}
+                store={manufacturer}
+              />
             ))
           ) : (
             <div className="text-center col-span-full py-12">
@@ -92,7 +91,6 @@ const StoresPage: React.FC = () => {
         </div>
       )}
 
-      {/* Bottom Navigation */}
       <BottomNav />
     </div>
   );

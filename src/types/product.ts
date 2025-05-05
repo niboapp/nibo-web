@@ -1,6 +1,7 @@
 import Store from "./stores";
 
 interface Product {
+  retailPrice: string;
   id: string;
   name: string;
   price: number;
@@ -10,9 +11,10 @@ interface Product {
   imageUrl: string;
   brand: string;
   store?: Store[];
-  ratings: number;
-  reviews: number;
+  quantity: number;
   quantityBought: number;
+  barcode: string;
+  batchNumber: number;
 }
 
 export default Product;

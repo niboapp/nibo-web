@@ -19,10 +19,10 @@ const SIGNUP_MUTATION = gql`
     $email: String!
     $password: String!
     $confirmPassword: String!
-    $businessName: String!
+    $name: String!
   ) {
-    signUpManufacturer(
-      signUpManufacturerInput: {
+    SignUp(
+      SignUpManufacturerInput: {
         email: $email
         password: $password
         confirmPassword: $confirmPassword
@@ -33,8 +33,6 @@ const SIGNUP_MUTATION = gql`
       token
       user {
         id
-        email
-        businessName
       }
     }
   }
@@ -53,7 +51,7 @@ export class AuthService {
 
   private constructor() {
     this.client = new ApolloClient({
-      uri: import.meta.env.BASE_API_URL || "http://localhost:3000/graphql",
+      uri: import.meta.env.BASE_API_URL || "http://localhost:3001/graphql",
       cache: new InMemoryCache(),
       defaultOptions: {
         mutate: {
@@ -93,7 +91,7 @@ export class AuthService {
 
   private createAuthLink() {
     return new HttpLink({
-      uri: import.meta.env.BASE_API_URL || "http://localhost:3000/graphql",
+      uri: import.meta.env.BASE_API_URL || "http://localhost:3001/graphql",
       headers: {
         authorization: this.getToken() ? `Bearer ${this.getToken()}` : "",
       },

@@ -15,11 +15,12 @@ const CreateAccount: React.FC = () => {
 
   const [signup, { loading: isLoading }] = useMutation(SIGNUP_MUTATION, {
     onCompleted: (data) => {
-      console.log(data);
-      if (data.signUpManufacturer.token) {
-        authService.setToken(data.signUpManufacturer.token);
-        navigate("/dashboard");
+      if (data?.signUp?.token) {
+        authService.setToken(data.signUp.token);
+        localStorage.setItem("userId", data.signUp.user.id);
       }
+      toast("You have successfully created an account.");
+      navigate("/dashboard/add-business");
     },
     onError: (error) => {
       setError("root", {
@@ -43,10 +44,13 @@ const CreateAccount: React.FC = () => {
     try {
       await signup({
         variables: {
-          email: data.email,
-          password: data.password,
-          confirmPassword: data.confirmPassword,
-          businessName: data.businessName,
+          signUpManufacturerInput: {
+            email: data.email,
+            password: data.password,
+            confirmPassword: data.confirmPassword,
+            name: data.businessName,
+            image: "rrr.com",
+          },
         },
       });
       toast("Account successfully created");
@@ -119,15 +123,15 @@ const CreateAccount: React.FC = () => {
                 htmlFor="businessName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Business Name
+                Name
               </label>
               <input
                 {...register("businessName", {
-                  required: "Business name is required",
+                  required: "Name is required",
                 })}
                 type="text"
                 id="businessName"
-                placeholder="Enter your business name"
+                placeholder="Enter your Name"
                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-700 focus:ring-pink-500 focus:border-pink-500"
               />
               {errors.businessName && (
