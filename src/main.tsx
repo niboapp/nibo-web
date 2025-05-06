@@ -17,7 +17,9 @@ import {
 import ManufacturerProvider from "./context/ManufacturerContext";
 
 const httpLink = createHttpLink({
-  uri: import.meta.env.VITE_BASE_API_URL!,
+  uri:
+    import.meta.env.VITE_BASE_API_URL ||
+    "https://handsome-perception-production.up.railway.app/graphql",
 });
 
 const client = new ApolloClient({
