@@ -62,7 +62,10 @@ const CreateAccount: React.FC = () => {
   return (
     <>
       <div className="absolute top-2 left-7">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1
+          onClick={() => navigate("/")}
+          className="text-3xl font-bold text-gray-900 mb-2 cursor-pointer"
+        >
           n<span className="text-bg-active">i</span>bo
           <span className="text-bg-active">.</span>
         </h1>

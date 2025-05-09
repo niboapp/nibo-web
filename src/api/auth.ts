@@ -124,7 +124,6 @@ export class AuthService {
         mutation: SIGNUP_MUTATION,
         variables: data,
       });
-      console.log(responseData);
       if (responseData.signUpManufacturer.token) {
         this.setToken(responseData.signUpManufacturer.token);
       }
@@ -145,7 +144,7 @@ export class AuthService {
       });
     } catch (error) {
       // Continue with token cleanup even if the server request fails
-      console.error("Logout error:", error);
+      console.error(error);
     } finally {
       this.clearToken();
     }

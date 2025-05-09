@@ -27,6 +27,22 @@ export const STORE_FEED = gql`
   }
 `;
 
+export const GET_STORE_PRODUCTS = gql`
+  query GetStoreProducts($brandStoreName: StringFilter!) {
+    products(where: { manufacturer: { brandStoreName: $brandStoreName } }) {
+      id
+      name
+      imageUrl
+      retailPrice
+      product {
+        productCategory
+      }
+      quantity
+      description
+    }
+  }
+`;
+
 export const MANUFACTURER_QUERY = gql`
   query Query {
     manufacturers {

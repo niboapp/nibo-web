@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { LoginFormInputs } from "../../types/auth";
 import { authService } from "../../api/auth";
 import { useMutation } from "@apollo/client";
 import { toast } from "sonner";
 import { LOGIN_MUTATION } from "../../qraphql/mutations";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const LoginForm: React.FC = () => {
   const {
@@ -50,6 +51,14 @@ const LoginForm: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-white">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex justify-center items-center h-screen bg-white">
       <form onSubmit={handleSubmit(onSubmit)} className="p-2">
@@ -60,7 +69,9 @@ const LoginForm: React.FC = () => {
         </p>
         <p className="font-light tracking-tighter">
           Don't have an account{" "}
-          <button onClick={() => navigate("/signup")}>Sign Up</button>
+          <Link to="/signup" className="text-pink-500 hover:underline">
+            Sign Up
+          </Link>
         </p>
         {errors.root && (
           <div className="mb-4 p-3 text-sm text-red-500 bg-red-50 rounded-md">
@@ -130,9 +141,12 @@ const LoginForm: React.FC = () => {
         </div>
 
         <div className="text-right mb-4">
-          <a href="/reset" className="text-pink-500 hover:underline text-sm">
-            Reset
-          </a>
+          <Link
+            to="/forgotpassword"
+            className="text-pink-500 hover:underline text-sm"
+          >
+            Reset Password
+          </Link>
         </div>
 
         <button
@@ -140,7 +154,14 @@ const LoginForm: React.FC = () => {
           disabled={isLoading}
           className="w-full bg-pink-500 hover:bg-pink-600 text-white py-2 rounded disabled:bg-pink-300 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Logging in..." : "Log in"}
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <LoadingSpinner size="sm" className="mr-2" />
+              Logging in...
+            </div>
+          ) : (
+            "Log in"
+          )}
         </button>
       </form>
     </div>

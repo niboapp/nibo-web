@@ -27,76 +27,56 @@ import MyAccount from "./pages/dashboard/MyAccount";
 import AddRetailerForm from "./pages/dashboard/retailers/AddRetailersForm";
 import BusinessRegistrationForm from "./pages/dashboard/MyBusiness";
 import AddRetailerCSV from "./pages/dashboard/retailers/AddRetailerCSV";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export const router = createBrowserRouter([
+  // Public routes
   { path: "/", element: <StoresPage />, errorElement: <ErrorPage /> },
   { path: "help", element: <Help /> },
-  {
-    path: "orders",
-    element: <Orders />,
-  },
-  {
-    path: "account",
-    element: <AccountPage />,
-  },
   { path: "cart", element: <Cart /> },
-  {
-    path: "/product/:id",
-    element: <Product />,
-  },
   { path: "categories", element: <Categories /> },
-  {
-    path: "/productdetail/:id",
-    element: <ProductDetails />,
-  },
-  {
-    path: "/:storeName",
-    element: <StoreDetails />,
-  },
   { path: "stores", element: <StoresPage /> },
+  { path: "/categories/:category", element: <ProductList /> },
+  { path: "/product/:id", element: <Product /> },
+  { path: "/productdetail/:id", element: <ProductDetails /> },
+  { path: "/:storeName", element: <StoreDetails /> },
+
+  // Auth routes
+  { path: "auth", element: <AuthPage /> },
   { path: "login", element: <LoginForm /> },
-  { path: "login", element: <AuthPage /> },
   { path: "signup", element: <CreateAccount /> },
   { path: "forgotpassword", element: <ForgotPassword /> },
   { path: "verify-otp", element: <VerificationCode /> },
   { path: "reset", element: <ResetPassword /> },
+
+  // Protected routes
   {
     path: "dashboard",
-    element: <DashboardLayout />,
+    element: <ProtectedRoute />,
     children: [
-      { path: "main", element: <Dashboard /> },
       {
-        path: "myproducts",
-        element: <MyProductsTable />,
-      },
-      {
-        path: "account",
-        element: <MyAccount />,
-      },
-      {
-        path: "retailers",
-        element: <AddRetailers />,
-      },
-      {
-        path: "add-retailer",
-        element: <AddRetailerForm />,
-      },
-      {
-        path: "addproducts",
-        element: <AddProductPage />,
-      },
-      {
-        path: "add-business",
-        element: <BusinessRegistrationForm />,
-      },
-      {
-        path: "add-retailer-csv",
-        element: <AddRetailerCSV />,
+        element: <DashboardLayout />,
+        children: [
+          { path: "main", element: <Dashboard /> },
+          { path: "myproducts", element: <MyProductsTable /> },
+          { path: "account", element: <MyAccount /> },
+          { path: "retailers", element: <AddRetailers /> },
+          { path: "add-retailer", element: <AddRetailerForm /> },
+          { path: "add-product", element: <AddProductPage /> },
+          { path: "add-business", element: <BusinessRegistrationForm /> },
+          { path: "add-retailer-csv", element: <AddRetailerCSV /> },
+        ],
       },
     ],
   },
+
+  // Protected account routes
   {
-    path: "/categories/:category",
-    element: <ProductList />,
+    path: "account",
+    element: <ProtectedRoute />,
+    children: [
+      { path: "", element: <AccountPage /> },
+      { path: "orders", element: <Orders /> },
+    ],
   },
 ]);
