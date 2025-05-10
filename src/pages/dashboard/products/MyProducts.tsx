@@ -4,14 +4,27 @@ import { useQuery } from "@apollo/client";
 import { GET_PRODUCTS } from "../../../qraphql/queries";
 import Product from "../../../types/product";
 import LeftArrow from "../../../components/ui/LeftArrow";
+import LoadingSpinner from "../../../components/LoadingSpinner";
+import { useManufacturer } from "../../../context/ManufacturerContext";
 
 const MyProductsTable = () => {
+  const { manufacturer } = useManufacturer();
+  console.log(manufacturer, "manufacturer");
   const navigate = useNavigate();
-  const { data: myProducts, loading } = useQuery(GET_PRODUCTS);
+  const { data: myProducts, loading } = useQuery(GET_PRODUCTS, {
+    variables: {
+      manufacturerId: {
+        equals: manufacturer,
+      },
+    },
+    skip: !manufacturer,
+  });
 
   if (loading) {
     return (
-      <div className="w-full flex justify-center items-center">Loading...</div>
+      <div className="flex justify-center items-center h-screen bg-white">
+        <LoadingSpinner size="lg" />
+      </div>
     );
   }
 
@@ -36,7 +49,7 @@ const MyProductsTable = () => {
 
         <div className="">
           <button
-            onClick={() => navigate("/dashboard/addproducts")}
+            onClick={() => navigate("/dashboard/add-product")}
             className="bg-gray-100 flex items-center px-4 py-2 text-gray-700 rounded-md hover:opacity-85 transition-all"
           >
             Add Product

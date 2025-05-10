@@ -6,29 +6,63 @@ import { useNavigate } from "react-router-dom";
 import ImageUpload from "../../../components/dashboard/ImageUpload";
 import { CREATE_PRODUCT } from "../../../qraphql/mutations";
 import LeftArrow from "../../../components/ui/LeftArrow";
+import { useManufacturer } from "../../../context/ManufacturerContext";
+import { GET_PRODUCTS } from "../../../qraphql/queries";
+
+interface ProductFormData {
+  name: string;
+  imageUrl: string;
+  description: string;
+  retailPrice: string;
+  quantity: number;
+  barCode: string;
+  batchNumber: number;
+  manufactureDate: string;
+  expiryDate: string;
+  manufacturerId: string;
+}
 
 export default function AddProductPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { manufacturer: manufacturerId } = useManufacturer();
+
   const [createProduct, { loading: isLoading }] = useMutation(CREATE_PRODUCT, {
     onCompleted: () => {
       toast.success("Your product has been added successfully");
       navigate("/dashboard/myproducts");
+    },
+    onError: (error) => {
+      toast.error(
+        "Failed to add product. " +
+          (error instanceof Error ? error.message : "")
+      );
     },
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     },
+    refetchQueries: [
+      {
+        query: GET_PRODUCTS,
+        variables: {
+          manufacturerId: {
+            equals: manufacturerId,
+          },
+        },
+      },
+    ],
+    awaitRefetchQueries: true,
   });
-  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm({
+  } = useForm<ProductFormData>({
     defaultValues: {
       name: "",
       imageUrl: "",
@@ -49,8 +83,14 @@ export default function AddProductPage() {
     setValue("imageUrl", imageUrl);
   };
 
-  const onSubmit = async (data: any) => {
-    const id = localStorage.getItem("userId");
+  const formatDateToISO = (dateString: string) => {
+    if (!dateString) return null;
+    // Create a date object and format it to ISO string
+    const date = new Date(dateString);
+    return date.toISOString();
+  };
+
+  const onSubmit = async (data: ProductFormData) => {
     try {
       if (!imageFile) {
         toast.error("Please upload an image before submitting.");
@@ -65,9 +105,9 @@ export default function AddProductPage() {
         quantity: data.quantity,
         barCode: data.barCode,
         batchNumber: data.batchNumber,
-        manufactureDate: data.manufactureDate,
-        expiryDate: data.expiryDate,
-        manufacturerId: id,
+        manufactureDate: formatDateToISO(data.manufactureDate),
+        expiryDate: formatDateToISO(data.expiryDate),
+        manufacturerId: manufacturerId,
       };
 
       await createProduct({
@@ -77,10 +117,6 @@ export default function AddProductPage() {
       });
     } catch (error) {
       console.error("Error adding product:", error);
-      toast.error(
-        "Failed to add product. " +
-          (error instanceof Error ? error.message : "")
-      );
     }
   };
 
@@ -259,8 +295,10 @@ export default function AddProductPage() {
               Manufacture Date
             </label>
             <input
-              type="datetime-local"
-              {...register("manufactureDate")}
+              type="date"
+              {...register("manufactureDate", {
+                required: "Manufacture date is required",
+              })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
             {errors.manufactureDate && (
@@ -275,8 +313,10 @@ export default function AddProductPage() {
               Expiry Date
             </label>
             <input
-              type="datetime-local"
-              {...register("expiryDate")}
+              type="date"
+              {...register("expiryDate", {
+                required: "Expiry date is required",
+              })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
             {errors.expiryDate && (

@@ -6,6 +6,7 @@ import ShoppingCart from "../../components/ui/ShoppingCart";
 import { BottomNav } from "../../components/Layout";
 import Button from "../../components/ui/Button";
 import { MANUFACTURER_QUERY } from "../../qraphql/queries";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const StoreCard = ({ store }: { store: any }) => {
   return (
@@ -30,8 +31,8 @@ const StoresPage: React.FC = () => {
   const navigate = useNavigate();
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+      <div className="flex justify-center items-center h-screen bg-white">
+        <LoadingSpinner size="lg" />
       </div>
     );
   }

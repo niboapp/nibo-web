@@ -50,6 +50,9 @@ export const LOGIN_MUTATION = gql`
       user {
         id
         email
+        manufacturers {
+          id
+        }
       }
     }
   }

@@ -15,6 +15,7 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 import ManufacturerProvider from "./context/ManufacturerContext";
+import { Toaster } from "sonner";
 
 const httpLink = createHttpLink({
   uri:
@@ -36,6 +37,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <SearchProvider>
               <CartProvider>
                 <ManufacturerProvider>
+                  <Toaster position="top-right" />
                   <RouterProvider router={router} />
                 </ManufacturerProvider>
               </CartProvider>

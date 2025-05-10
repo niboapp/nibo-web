@@ -86,7 +86,6 @@ export const DashboardLayout: React.FC = () => {
         <div className="p-5">
           <Button
             onClick={() => {
-              authService.clearToken();
               authService.logout();
               navigate("/login");
             }}

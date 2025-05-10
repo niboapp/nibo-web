@@ -4,7 +4,7 @@ import { ChevronLeft, Plus, Minus } from "lucide-react";
 import { useMutation } from "@apollo/client";
 import { CREATE_RETAILER_MUTATION } from "../../../qraphql/mutations";
 import { toast } from "sonner";
-
+import { useManufacturer } from "../../../context/ManufacturerContext";
 interface Retailer {
   name: string;
   fullAddress: string;
@@ -22,6 +22,7 @@ interface CreateRetailerResponse {
 
 const AddRetailerForm = () => {
   const navigate = useNavigate();
+  const { manufacturer: manufacturerId } = useManufacturer();
   const [retailers, setRetailers] = useState<Retailer[]>([
     { name: "", fullAddress: "", contact: "" },
   ]);
@@ -65,8 +66,6 @@ const AddRetailerForm = () => {
     e.preventDefault();
 
     try {
-      const manufacturerId = localStorage.getItem("userId");
-
       if (!manufacturerId) {
         console.error("Manufacturer ID not found in localStorage");
         toast.error("User ID not found. Please log in again.");

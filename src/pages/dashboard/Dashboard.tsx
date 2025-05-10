@@ -29,26 +29,26 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="text-gray-600">Total Revenue</h3>
-          <p className="text-xl font-bold">₦50,340,783.65</p>
+          <p className="text-xl font-bold">₦0.00</p>
           <p className="text-sm text-gray-500">Across all products</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="text-gray-600">Total Orders</h3>
-          <p className="text-xl font-bold">6,763</p>
+          <p className="text-xl font-bold">0</p>
           <p className="text-sm text-gray-500">
             5% MoM increase in completed orders
           </p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="text-gray-600">Returning Users</h3>
-          <p className="text-xl font-bold">874</p>
+          <p className="text-xl font-bold">0</p>
           <p className="text-sm text-gray-500">
             12% of first-time buyers return
           </p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="text-gray-600">Total Reach</h3>
-          <p className="text-xl font-bold">378,800</p>
+          <p className="text-xl font-bold">0</p>
           <p className="text-sm text-gray-500">Across all locations</p>
         </div>
       </div>
@@ -76,7 +76,7 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
           <button
-            onClick={() => navigate("/dashboard/addproducts")}
+            onClick={() => navigate("/dashboard/add-product")}
             className="w-full py-3 bg-pink-500 text-white font-bold rounded-md hover:bg-pink-600"
           >
             Add Product
