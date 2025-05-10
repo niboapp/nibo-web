@@ -5,6 +5,7 @@ import { ProductCard } from "./ProductCard";
 import { useCart } from "../context/CartContext";
 import { Heart } from "lucide-react";
 import { toast, Toaster } from "sonner";
+import LoadingSpinner from "./LoadingSpinner";
 
 // GraphQL query for product details
 const GET_PRODUCT = gql`
@@ -59,7 +60,13 @@ export const ProductDetails: React.FC = () => {
     relatedData?.products?.filter((p: Product) => p.id !== id)?.slice(0, 4) ||
     [];
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-white">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
   if (error) return <div>Error loading product: {error.message}</div>;
   if (!data?.product) return <div>Product not found</div>;
 

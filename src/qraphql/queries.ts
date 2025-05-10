@@ -1,28 +1,14 @@
 import { gql } from "@apollo/client";
 
 export const GET_PRODUCTS = gql`
-  query Products($where: ProductWhereInput) {
-    products(where: $where) {
+  query Products($manufacturerId: StringFilter!) {
+    products(where: { manufacturerId: $manufacturerId }) {
       id
       name
       imageUrl
       retailPrice
       quantity
       description
-    }
-  }
-`;
-
-export const STORE_FEED = gql`
-  query Products($where: ProductWhereInput) {
-    products(where: $where) {
-      id
-      name
-      imageUrl
-      product {
-        productCategory
-      }
-      retailPrice
     }
   }
 `;
@@ -39,6 +25,17 @@ export const GET_STORE_PRODUCTS = gql`
       }
       quantity
       description
+    }
+  }
+`;
+
+export const GET_RETAILERS = gql`
+  query Locations($manufacturerId: StringFilter!) {
+    locations(where: { store: { manufacturerId: $manufacturerId } }) {
+      id
+      fullAddress
+      metaData
+      longitude
     }
   }
 `;

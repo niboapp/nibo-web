@@ -8,6 +8,7 @@ import { useMutation } from "@apollo/client";
 import { toast } from "sonner";
 import { LOGIN_MUTATION } from "../../qraphql/mutations";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import { useManufacturer } from "../../context/ManufacturerContext";
 
 const LoginForm: React.FC = () => {
   const {
@@ -18,12 +19,14 @@ const LoginForm: React.FC = () => {
   } = useForm<LoginFormInputs>();
 
   const navigate = useNavigate();
+  const { saveManufacturer } = useManufacturer();
   const [login, { loading: isLoading }] = useMutation(LOGIN_MUTATION, {
     onCompleted: (data) => {
       if (data.logIn.token) {
         authService.setToken(data.logIn.token);
         localStorage.removeItem("userId");
         localStorage.setItem("userId", data.logIn.user.id);
+        saveManufacturer(data.logIn.user.manufacturers[0].id);
         navigate("/dashboard/main");
         toast("Successfully logged in");
       }
@@ -50,14 +53,6 @@ const LoginForm: React.FC = () => {
       console.error("Login error:", error);
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-white">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
-  }
 
   return (
     <div className="flex justify-center items-center h-screen bg-white">

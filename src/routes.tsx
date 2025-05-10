@@ -22,12 +22,12 @@ import CreateAccount from "./pages/auth/SignUpPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import VerificationCode from "./pages/auth/VerificationCode";
 import ResetPassword from "./pages/auth/ResetPassword";
-import AddRetailers from "./pages/dashboard/retailers/AddRetailers";
 import MyAccount from "./pages/dashboard/MyAccount";
 import AddRetailerForm from "./pages/dashboard/retailers/AddRetailersForm";
 import BusinessRegistrationForm from "./pages/dashboard/MyBusiness";
 import AddRetailerCSV from "./pages/dashboard/retailers/AddRetailerCSV";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RetailersList from "./pages/dashboard/retailers/RetailersList";
 
 export const router = createBrowserRouter([
   // Public routes
@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
           { path: "main", element: <Dashboard /> },
           { path: "myproducts", element: <MyProductsTable /> },
           { path: "account", element: <MyAccount /> },
-          { path: "retailers", element: <AddRetailers /> },
+          { path: "retailers", element: <RetailersList /> },
           { path: "add-retailer", element: <AddRetailerForm /> },
           { path: "add-product", element: <AddProductPage /> },
           { path: "add-business", element: <BusinessRegistrationForm /> },

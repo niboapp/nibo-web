@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApolloClient, InMemoryCache, gql, HttpLink } from "@apollo/client";
 import { AuthResponse, LoginFormInputs, SignupFormInputs } from "../types/auth";
 
@@ -39,8 +38,10 @@ const SIGNUP_MUTATION = gql`
 `;
 
 const LOGOUT_MUTATION = gql`
-  mutation Logout {
-    logout
+  mutation Logout($logOutId: String!) {
+    logOut(id: $logOutId) {
+      message
+    }
   }
 `;
 
@@ -141,12 +142,16 @@ export class AuthService {
     try {
       await this.client.mutate({
         mutation: LOGOUT_MUTATION,
+        variables: {
+          logOutId: localStorage.getItem("userId"),
+        },
       });
     } catch (error) {
       // Continue with token cleanup even if the server request fails
       console.error(error);
     } finally {
       this.clearToken();
+      localStorage.removeItem("manufacturer_id");
     }
   }
 }
