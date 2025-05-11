@@ -1,46 +1,69 @@
 name: Nibo's Landing Page
 run-name: Deploy to GitHub Pages
+
 on:
   push:
     branches:
       - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      VITE_BASE_API_URL: ${{ secrets.VITE_BASE_API_URL }}
-      VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
-      VITE_CLOUDINARY_CLOUD_NAME: ${{ secrets.VITE_CLOUDINARY_CLOUD_NAME }}
-      VITE_CLOUDINARY_URL: ${{ secrets.VITE_CLOUDINARY_URL }}
-      VITE_CLOUDINARY_UPLOAD_PRESET: ${{ secrets.VITE_CLOUDINARY_UPLOAD_PRESET }}
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v2
+
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "20"
+          node-version: 20
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: npm install
-      - name: Build
+
+      - name: Create .env.production file
+        run: |
+          echo "VITE_BASE_API_URL=${{ secrets.VITE_BASE_API_URL }}" >> .env.production
+          echo "VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}" >> .env.production
+          echo "VITE_CLOUDINARY_CLOUD_NAME=${{ secrets.VITE_CLOUDINARY_CLOUD_NAME }}" >> .env.production
+          echo "VITE_CLOUDINARY_URL=${{ secrets.VITE_CLOUDINARY_URL }}" >> .env.production
+          echo "VITE_CLOUDINARY_UPLOAD_PRESET=${{ secrets.VITE_CLOUDINARY_UPLOAD_PRESET }}" >> .env.production
+
+      - name: Build project
         run: npm run build
-      - name: Archive production artifacts
+
+      - name: Upload production build
         uses: actions/upload-artifact@v4
         with:
           name: dist
           path: ./dist
+
   deploy:
     runs-on: ubuntu-latest
+    needs: build
     permissions:
       contents: write
-    needs: build
+
     steps:
-      - name: Download artifact
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: ./dist
-      - name: Deploy
+
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
