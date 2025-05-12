@@ -25,7 +25,6 @@ const defaultCenter = {
 const useGoogleMaps = (apiKey: string) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  console.log(apiKey);
   useEffect(() => {
     if (window.google?.maps) {
       setIsLoaded(true);
