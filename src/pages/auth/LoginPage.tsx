@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Eye, EyeClosed } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginFormInputs } from "../../types/auth";
 import { authService } from "../../api/auth";
 import { useMutation } from "@apollo/client";
@@ -26,7 +26,7 @@ const LoginForm: React.FC = () => {
         authService.setToken(data.logIn.token);
         localStorage.removeItem("userId");
         localStorage.setItem("userId", data.logIn.user.id);
-        saveManufacturer(data.logIn.user.manufacturers[0].id);
+        saveManufacturer(data?.logIn?.user?.manufacturers[0].id || "");
         navigate("/dashboard/main");
         toast("Successfully logged in");
       }
@@ -39,7 +39,7 @@ const LoginForm: React.FC = () => {
     },
   });
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
@@ -55,111 +55,136 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-white">
-      <form onSubmit={handleSubmit(onSubmit)} className="p-2">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Log in</h2>
-        <p className="text-center text-gray-600 mb-6">
-          Welcome to Nibo! Come on in to continue making your products more
-          accessible.
-        </p>
-        <p className="font-light tracking-tighter">
-          Don't have an account{" "}
-          <Link to="/signup" className="text-pink-500 hover:underline">
-            Sign Up
-          </Link>
-        </p>
-        {errors.root && (
-          <div className="mb-4 p-3 text-sm text-red-500 bg-red-50 rounded-md">
-            {errors.root.message}
-          </div>
-        )}
-
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Invalid email address",
-              },
-            })}
-            className={`mt-1 block w-full border rounded p-2 ${
-              errors.email ? "border-red-500" : "border-gray-300"
-            }`}
-            placeholder="Enter your email"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Password
-          </label>
-          <div className="relative">
-            <input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              {...register("password", {
-                required: "Password is required",
-              })}
-              className={`mt-1 block w-full border rounded p-2 ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="Enter your password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-3 flex items-center text-gray-500"
-            >
-              {showPassword ? <Eye /> : <EyeClosed />}
-            </button>
-          </div>
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-
-        <div className="text-right mb-4">
-          <Link
-            to="/forgotpassword"
-            className="text-pink-500 hover:underline text-sm"
-          >
-            Reset Password
-          </Link>
-        </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-pink-500 hover:bg-pink-600 text-white py-2 rounded disabled:bg-pink-300 disabled:cursor-not-allowed"
+    <>
+      <div className="absolute top-2 left-7">
+        <h1
+          onClick={() => navigate("/")}
+          className="text-3xl font-bold text-gray-900 mb-2 cursor-pointer"
         >
-          {isLoading ? (
-            <div className="flex items-center justify-center">
-              <LoadingSpinner size="sm" className="mr-2" />
-              Logging in...
+          n<span className="text-bg-active">i</span>bo
+          <span className="text-bg-active">.</span>
+        </h1>
+      </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-full max-w-md p-3 bg-white">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="text-gray-500 mb-4 hover:text-gray-700 flex items-center"
+          >
+            <ArrowLeft className="w-5 h-5 mr-1" />
+          </button>
+
+          <h2 className="text-2xl font-semibold text-gray-900 text-center mb-2">
+            Login to your account
+          </h2>
+          <p className="text-gray-500 text-center mb-6">
+            Welcome to Nibo! Come on in to continue make your products more
+            accessible
+          </p>
+
+          {errors.root && (
+            <div className="mb-4 p-3 text-sm text-red-500 bg-red-50 rounded-md">
+              {errors.root.message}
             </div>
-          ) : (
-            "Log in"
           )}
-        </button>
-      </form>
-    </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <input
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address",
+                  },
+                })}
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-700 focus:ring-pink-500 focus:border-pink-500"
+              />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+            <div className="relative">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <input
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters long",
+                  },
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
+                  },
+                })}
+                type={passwordVisible ? "text" : "password"}
+                id="password"
+                placeholder="Enter your Password"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-700 focus:ring-pink-500 focus:border-pink-500"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                onClick={() => setPasswordVisible(!passwordVisible)}
+              >
+                {passwordVisible ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="flex items-center justify-center gap-3 w-full px-4 py-2 bg-pink-500 text-white font-semibold rounded-md shadow-sm hover:bg-pink-600 disabled:bg-pink-300 disabled:cursor-not-allowed"
+            >
+              {isLoading && <LoadingSpinner size="sm" />}
+              {!isLoading ? "Log In" : "Logging in.."}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-gray-500">
+              Forgot your password?
+              <Link
+                to="/reset"
+                className="text-pink-500 hover:underline font-medium"
+              >
+                {" "}
+                Reset
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

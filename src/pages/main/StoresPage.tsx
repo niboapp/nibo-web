@@ -11,7 +11,7 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 const StoreCard = ({ store }: { store: any }) => {
   return (
     <Link
-      to={`/${encodeURIComponent(store.brandStoreName.replace(" ", "-"))}`}
+      to={`/${encodeURIComponent(store.brandStoreName)}`}
       className="flex flex-col items-center p-4 bg-gray-50 rounded-lg shadow-sm space-y-2 hover:bg-gray-100 transition-transform transform hover:scale-105"
     >
       <img

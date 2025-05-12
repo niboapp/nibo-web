@@ -83,11 +83,11 @@ const EmptyStoreUI: React.FC<{ storeName: string | undefined }> = ({
 export const StoreDetails: React.FC = () => {
   const { storeName } = useParams<{ storeName: string }>();
   const { searchTerm, setSearchTerm } = useSearch();
-
+  const validStore = storeName && decodeURIComponent(storeName);
   const { data, loading, error } = useQuery(GET_STORE_PRODUCTS, {
     variables: {
       brandStoreName: {
-        equals: storeName,
+        equals: validStore,
       },
     },
     skip: !storeName,

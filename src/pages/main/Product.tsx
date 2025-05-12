@@ -6,6 +6,7 @@ import MapComponent, { UserLocation } from "../../components/MapComponent";
 import { Link, useParams } from "react-router-dom";
 import Button from "../../components/ui/Button";
 import { GET_LOCATIONS, GET_PRODUCT } from "../../qraphql/queries";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -66,7 +67,9 @@ export default function ProductPage() {
 
   if (locationsLoading || productLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center">Loading...</div>
+      <div className="flex justify-center items-center h-screen bg-white">
+        <LoadingSpinner size="lg" />
+      </div>
     );
   }
 
