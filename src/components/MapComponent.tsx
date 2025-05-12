@@ -25,15 +25,14 @@ const defaultCenter = {
 const useGoogleMaps = (apiKey: string) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const formattedKey = apiKey.slice(0, apiKey.length - 1);
-  console.log(formattedKey);
+  console.log(apiKey);
   useEffect(() => {
     if (window.google?.maps) {
       setIsLoaded(true);
       return;
     }
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${formattedKey}&libraries=places,marker`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,marker`;
     script.async = true;
     script.defer = true;
 

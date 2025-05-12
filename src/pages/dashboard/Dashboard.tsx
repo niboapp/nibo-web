@@ -36,14 +36,14 @@ const Dashboard: React.FC = () => {
           <h3 className="text-gray-600">Total Orders</h3>
           <p className="text-xl font-bold">0</p>
           <p className="text-sm text-gray-500">
-            5% MoM increase in completed orders
+            0% MoM increase in completed orders
           </p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="text-gray-600">Returning Users</h3>
           <p className="text-xl font-bold">0</p>
           <p className="text-sm text-gray-500">
-            12% of first-time buyers return
+            0% of first-time buyers return
           </p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
@@ -63,16 +63,16 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 gap-6">
           <div className="bg-white p-4 rounded-lg shadow">
             <h3 className="text-gray-600">Total Unique Product Search</h3>
-            <p className="text-xl font-bold">5,893</p>
+            <p className="text-xl font-bold">0</p>
             <p className="text-sm text-gray-500">
               Searches from the Nibo marketplace
             </p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
             <h3 className="text-gray-600">Landing Page View</h3>
-            <p className="text-xl font-bold">37,880</p>
+            <p className="text-xl font-bold">0</p>
             <p className="text-sm text-gray-500">
-              Increased conversion rate by 10%
+              Increased conversion rate by 0%
             </p>
           </div>
           <button

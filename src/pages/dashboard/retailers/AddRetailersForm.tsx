@@ -5,6 +5,7 @@ import { useMutation } from "@apollo/client";
 import { CREATE_RETAILER_MUTATION } from "../../../qraphql/mutations";
 import { toast } from "sonner";
 import { useManufacturer } from "../../../context/ManufacturerContext";
+import { GET_RETAILERS } from "../../../qraphql/queries";
 interface Retailer {
   name: string;
   fullAddress: string;
@@ -40,6 +41,14 @@ const AddRetailerForm = () => {
       console.error(error);
       toast.error("There was an error creating the retailers.");
     },
+    refetchQueries: [
+      {
+        query: GET_RETAILERS,
+        variables: {
+          id: manufacturerId,
+        },
+      },
+    ],
   });
 
   const handleChange = (

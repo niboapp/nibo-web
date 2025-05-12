@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SignupFormInputs } from "../../types/auth";
 import { authService } from "../../api/auth";
 import { useMutation } from "@apollo/client";
@@ -238,12 +238,12 @@ const CreateAccount: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-gray-500">
               I already have an account?{" "}
-              <a
-                href="/login"
+              <Link
+                to="/login"
                 className="text-pink-500 hover:underline font-medium"
               >
                 Log in
-              </a>
+              </Link>
             </p>
           </div>
         </div>

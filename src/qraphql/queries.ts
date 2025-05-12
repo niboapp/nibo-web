@@ -30,12 +30,16 @@ export const GET_STORE_PRODUCTS = gql`
 `;
 
 export const GET_RETAILERS = gql`
-  query Locations($manufacturerId: StringFilter!) {
-    locations(where: { store: { manufacturerId: $manufacturerId } }) {
-      id
-      fullAddress
-      metaData
-      longitude
+  query Locations($id: String!) {
+    manufacturer(where: { id: $id }) {
+      stores {
+        name
+        contact
+        location {
+          fullAddress
+          longitude
+        }
+      }
     }
   }
 `;
@@ -54,9 +58,6 @@ export const GET_LOCATIONS = gql`
       latitude
       longitude
       id
-      store {
-        name
-      }
     }
   }
 `;
