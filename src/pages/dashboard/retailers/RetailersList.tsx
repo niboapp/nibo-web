@@ -6,23 +6,21 @@ import { Link } from "react-router-dom";
 import { MoreVertical, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useManufacturer } from "../../../context/ManufacturerContext";
-interface Location {
-  id: string;
-  fullAddress: string;
-  store: {
-    id: string;
-    name: string;
-    contact: string;
-  };
-}
+// interface store {
+//   id: string;
+//   fullAddress: string;
+//   store: {
+//     id: string;
+//     name: string;
+//     contact: string;
+//   };
+// }
 
 const RetailersList: React.FC = () => {
   const { manufacturer } = useManufacturer();
   const { data, loading, error } = useQuery(GET_RETAILERS, {
     variables: {
-      manufacturerId: {
-        equals: manufacturer,
-      },
+      id: manufacturer,
     },
     skip: !manufacturer,
   });
@@ -46,7 +44,7 @@ const RetailersList: React.FC = () => {
     );
   }
 
-  const locations = data?.locations || [];
+  const stores = data?.manufacturer?.stores || [];
 
   return (
     <div className="p-6">
@@ -74,7 +72,7 @@ const RetailersList: React.FC = () => {
         </div>
       </div>
 
-      {locations.length === 0 ? (
+      {stores.length === 0 ? (
         <div className="text-center py-8 bg-gray-50 rounded-lg">
           <p className="text-gray-600">
             No retailers found. Add your first retailer to get started.
@@ -107,21 +105,21 @@ const RetailersList: React.FC = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {locations.map((location: Location) => (
-                <tr key={location?.id} className="hover:bg-gray-50">
+              {stores.map((store: any) => (
+                <tr key={store?.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
-                      {location?.store?.name}
+                      {store?.name}
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-500">
-                      {location?.fullAddress}
+                      {store?.location?.fullAddress}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-500">
-                      {location?.store?.contact}
+                      {store?.contact}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

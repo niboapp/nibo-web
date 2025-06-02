@@ -83,10 +83,9 @@ const EmptyStoreUI: React.FC<{ storeName: string | undefined }> = ({
 export const StoreDetails: React.FC = () => {
   const { storeName } = useParams<{ storeName: string }>();
   const { searchTerm, setSearchTerm } = useSearch();
-
   const { data, loading, error } = useQuery(GET_STORE_PRODUCTS, {
     variables: {
-      brandStoreName: {
+      slug: {
         equals: storeName,
       },
     },

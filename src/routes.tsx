@@ -52,21 +52,17 @@ export const router = createBrowserRouter([
   // Protected routes
   {
     path: "dashboard",
-    element: <ProtectedRoute />,
+
+    element: <DashboardLayout />,
     children: [
-      {
-        element: <DashboardLayout />,
-        children: [
-          { path: "main", element: <Dashboard /> },
-          { path: "myproducts", element: <MyProductsTable /> },
-          { path: "account", element: <MyAccount /> },
-          { path: "retailers", element: <RetailersList /> },
-          { path: "add-retailer", element: <AddRetailerForm /> },
-          { path: "add-product", element: <AddProductPage /> },
-          { path: "add-business", element: <BusinessRegistrationForm /> },
-          { path: "add-retailer-csv", element: <AddRetailerCSV /> },
-        ],
-      },
+      { path: "main", element: <Dashboard /> },
+      { path: "myproducts", element: <MyProductsTable /> },
+      { path: "account", element: <MyAccount /> },
+      { path: "retailers", element: <RetailersList /> },
+      { path: "add-retailer", element: <AddRetailerForm /> },
+      { path: "add-product", element: <AddProductPage /> },
+      { path: "add-business", element: <BusinessRegistrationForm /> },
+      { path: "add-retailer-csv", element: <AddRetailerCSV /> },
     ],
   },
 

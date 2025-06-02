@@ -30,7 +30,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadSuccess }) => {
       formData.append("upload_preset", "NIBO_UPLOAD");
 
       const response = await fetch(
-        import.meta.env.VITE_CLOUDINARY_URL as string,
+        (import.meta.env.VITE_CLOUDINARY_URL as string) ||
+          "https://api.cloudinary.com/v1_1/dhextvgwv/image/upload",
         {
           method: "POST",
           body: formData,

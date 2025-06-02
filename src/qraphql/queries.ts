@@ -14,8 +14,8 @@ export const GET_PRODUCTS = gql`
 `;
 
 export const GET_STORE_PRODUCTS = gql`
-  query GetStoreProducts($brandStoreName: StringFilter!) {
-    products(where: { manufacturer: { brandStoreName: $brandStoreName } }) {
+  query GetStoreProducts($slug: StringFilter!) {
+    products(where: { manufacturer: { slug: $slug } }) {
       id
       name
       imageUrl
@@ -30,12 +30,16 @@ export const GET_STORE_PRODUCTS = gql`
 `;
 
 export const GET_RETAILERS = gql`
-  query Locations($manufacturerId: StringFilter!) {
-    locations(where: { store: { manufacturerId: $manufacturerId } }) {
-      id
-      fullAddress
-      metaData
-      longitude
+  query Locations($id: String!) {
+    manufacturer(where: { id: $id }) {
+      stores {
+        name
+        contact
+        location {
+          fullAddress
+          longitude
+        }
+      }
     }
   }
 `;
@@ -44,6 +48,7 @@ export const MANUFACTURER_QUERY = gql`
   query Query {
     manufacturers {
       brandStoreName
+      slug
     }
   }
 `;
@@ -54,9 +59,6 @@ export const GET_LOCATIONS = gql`
       latitude
       longitude
       id
-      store {
-        name
-      }
     }
   }
 `;
@@ -72,5 +74,11 @@ export const GET_PRODUCT = gql`
       createdAt
       quantity
     }
+  }
+`;
+
+export const SEARCH_ADDRESS = gql`
+  query SearchAddress($address: String!) {
+    searchAddress(address: $address)
   }
 `;

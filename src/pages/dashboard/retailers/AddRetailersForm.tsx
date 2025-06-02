@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Plus, Minus } from "lucide-react";
-import { useMutation } from "@apollo/client";
+import { ChevronLeft, Plus, Minus, Search, MapPin } from "lucide-react";
+import { useMutation, useLazyQuery } from "@apollo/client";
 import { CREATE_RETAILER_MUTATION } from "../../../qraphql/mutations";
 import { toast } from "sonner";
 import { useManufacturer } from "../../../context/ManufacturerContext";
+import { GET_RETAILERS, SEARCH_ADDRESS } from "../../../qraphql/queries";
+
 interface Retailer {
   name: string;
   fullAddress: string;
@@ -27,6 +29,35 @@ const AddRetailerForm = () => {
     { name: "", fullAddress: "", contact: "" },
   ]);
 
+  const [addressSuggestions, setAddressSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
+  const suggestionRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+
+  const [searchAddresses, { loading: searchLoading }] = useLazyQuery(
+    SEARCH_ADDRESS,
+    {
+      context: {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      },
+      onCompleted: (data) => {
+        setAddressSuggestions(data?.searchAddress || []);
+        console.log("Address suggestions:", addressSuggestions);
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("There was an error searching for the address.");
+        setAddressSuggestions([]);
+      },
+    }
+  );
+
   const [addRetailers, { loading }] = useMutation<
     CreateRetailerResponse,
     { createStoreInputs: (Retailer & { manufacturerId: string })[] }
@@ -40,7 +71,33 @@ const AddRetailerForm = () => {
       console.error(error);
       toast.error("There was an error creating the retailers.");
     },
+    refetchQueries: [
+      {
+        query: GET_RETAILERS,
+        variables: {
+          id: manufacturerId,
+        },
+      },
+    ],
   });
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const clickedOutside = Object.keys(suggestionRefs.current).every(
+        (key) => {
+          const ref = suggestionRefs.current[parseInt(key)];
+          return !ref || !ref.contains(event.target as Node);
+        }
+      );
+
+      if (clickedOutside) {
+        setShowSuggestions({});
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleChange = (
     index: number,
@@ -50,6 +107,39 @@ const AddRetailerForm = () => {
     const updatedRetailers = [...retailers];
     updatedRetailers[index][field] = value;
     setRetailers(updatedRetailers);
+
+    if (field === "fullAddress") {
+      handleAddressSearch(value, index);
+    }
+  };
+
+  const handleAddressSearch = (query: string, index: number) => {
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    if (query.length < 3) {
+      setShowSuggestions((prev) => ({ ...prev, [index]: false }));
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      searchAddresses({
+        variables: {
+          address: query,
+        },
+      });
+      setShowSuggestions((prev) => ({ ...prev, [index]: true }));
+    }, 300);
+
+    setSearchTimeout(timeout);
+  };
+
+  const handleAddressSelect = (address: string, index: number) => {
+    const updatedRetailers = [...retailers];
+    updatedRetailers[index].fullAddress = address;
+    setRetailers(updatedRetailers);
+    setShowSuggestions((prev) => ({ ...prev, [index]: false }));
   };
 
   const addRetailerRow = () => {
@@ -60,6 +150,12 @@ const AddRetailerForm = () => {
     if (retailers.length === 1) return;
     const updatedRetailers = retailers.filter((_, i) => i !== index);
     setRetailers(updatedRetailers);
+
+    setShowSuggestions((prev) => {
+      const newState = { ...prev };
+      delete newState[index];
+      return newState;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -67,7 +163,7 @@ const AddRetailerForm = () => {
 
     try {
       if (!manufacturerId) {
-        console.error("Manufacturer ID not found in localStorage");
+        console.error("Manufacturer ID not found");
         toast.error("User ID not found. Please log in again.");
         return;
       }
@@ -114,7 +210,7 @@ const AddRetailerForm = () => {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="bg-gray-50 rounded-lg overflow-hidden">
+        <div className="bg-gray-50 rounded-lg">
           <table className="w-full">
             <thead className="bg-white">
               <tr className="border-b border-gray-100">
@@ -145,17 +241,78 @@ const AddRetailerForm = () => {
                       required
                     />
                   </td>
-                  <td className="py-3 px-6">
-                    <input
-                      type="text"
-                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-pink-500"
-                      placeholder="Full address"
-                      value={retailer.fullAddress}
-                      onChange={(e) =>
-                        handleChange(index, "fullAddress", e.target.value)
-                      }
-                      required
-                    />
+                  <td className="py-3 px-6 relative">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        className="w-full p-2 pr-8 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-pink-500"
+                        placeholder="Start typing to search address..."
+                        value={retailer.fullAddress}
+                        onChange={(e) =>
+                          handleChange(index, "fullAddress", e.target.value)
+                        }
+                        onFocus={() => {
+                          if (
+                            retailer.fullAddress.length >= 3 &&
+                            addressSuggestions.length > 0
+                          ) {
+                            setShowSuggestions((prev) => ({
+                              ...prev,
+                              [index]: true,
+                            }));
+                          }
+                        }}
+                        required
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+                        {searchLoading ? (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-500"></div>
+                        ) : (
+                          <Search size={16} className="text-gray-400" />
+                        )}
+                      </div>
+
+                      {showSuggestions[index] &&
+                        addressSuggestions.length > 0 && (
+                          <div
+                            ref={(el) => (suggestionRefs.current[index] = el)}
+                            className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto z-50"
+                          >
+                            {addressSuggestions.map((suggestion, i) => (
+                              <button
+                                key={i}
+                                type="button"
+                                className="w-full text-left px-3 py-2 hover:bg-pink-100 transition-colors duration-150 flex items-start space-x-2"
+                                onClick={() =>
+                                  handleAddressSelect(suggestion, index)
+                                }
+                              >
+                                <MapPin
+                                  size={16}
+                                  className="text-gray-400 mt-0.5 flex-shrink-0"
+                                />
+                                <span className="text-sm text-gray-700 line-clamp-2">
+                                  {suggestion}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+
+                      {showSuggestions[index] &&
+                        addressSuggestions.length === 0 &&
+                        !searchLoading &&
+                        retailer.fullAddress.length >= 3 && (
+                          <div
+                            ref={(el) => (suggestionRefs.current[index] = el)}
+                            className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-50"
+                          >
+                            <div className="px-3 py-2 text-sm text-gray-500 text-center">
+                              No addresses found
+                            </div>
+                          </div>
+                        )}
+                    </div>
                   </td>
                   <td className="py-3 px-6">
                     <input
@@ -197,13 +354,13 @@ const AddRetailerForm = () => {
           </table>
         </div>
 
-        <div className="bottom-8 right-8 fixed">
+        <div className="mt-4 flex justify-end">
           <button
             type="submit"
-            className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-6 rounded-md"
             disabled={loading}
+            className="px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600 flex items-center"
           >
-            {loading ? "Adding..." : "Add Retailers"}
+            {loading ? "Saving..." : "Save Retailers"}
           </button>
         </div>
       </form>
