@@ -74,7 +74,7 @@ const BusinessRegistrationForm: React.FC = () => {
       onCompleted: (data) => {
         toast("Your business has been created successfully ");
         console.log(data);
-        saveManufacturer(data?.data?.id);
+        saveManufacturer(data?.createManufacturer?.id);
         setisModalOpen(true);
         reset(defaultValues);
       },

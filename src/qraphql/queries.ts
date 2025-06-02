@@ -14,8 +14,8 @@ export const GET_PRODUCTS = gql`
 `;
 
 export const GET_STORE_PRODUCTS = gql`
-  query GetStoreProducts($brandStoreName: StringFilter!) {
-    products(where: { manufacturer: { brandStoreName: $brandStoreName } }) {
+  query GetStoreProducts($slug: StringFilter!) {
+    products(where: { manufacturer: { slug: $slug } }) {
       id
       name
       imageUrl
@@ -48,6 +48,7 @@ export const MANUFACTURER_QUERY = gql`
   query Query {
     manufacturers {
       brandStoreName
+      slug
     }
   }
 `;
@@ -73,5 +74,11 @@ export const GET_PRODUCT = gql`
       createdAt
       quantity
     }
+  }
+`;
+
+export const SEARCH_ADDRESS = gql`
+  query SearchAddress($address: String!) {
+    searchAddress(address: $address)
   }
 `;

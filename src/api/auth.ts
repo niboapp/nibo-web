@@ -52,8 +52,15 @@ export class AuthService {
 
   private constructor() {
     this.client = new ApolloClient({
-      uri: import.meta.env.BASE_API_URL || "http://localhost:3001/graphql",
+      uri: import.meta.env.VITE_BASE_API_URL
+        ? `${import.meta.env.VITE_BASE_API_URL}/graphql`
+        : "https://nibo-api-production.up.railway.app/graphql",
       cache: new InMemoryCache(),
+      defaultContext: {
+        headers: {
+          authorization: this.getToken() ? `Bearer ${this.getToken()}` : "",
+        },
+      },
       defaultOptions: {
         mutate: {
           errorPolicy: "all",
@@ -92,7 +99,9 @@ export class AuthService {
 
   private createAuthLink() {
     return new HttpLink({
-      uri: import.meta.env.BASE_API_URL || "http://localhost:3001/graphql",
+      uri:
+        import.meta.env.VITE_BASE_API_URL ||
+        "https://nibo-api-production.up.railway.app/graphql",
       headers: {
         authorization: this.getToken() ? `Bearer ${this.getToken()}` : "",
       },

@@ -11,17 +11,15 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 const StoreCard = ({ store }: { store: any }) => {
   return (
     <Link
-      to={`/${encodeURIComponent(store.brandStoreName)}`}
+      to={`/${encodeURIComponent(store.slug)}`}
       className="flex flex-col items-center p-4 bg-gray-50 rounded-lg shadow-sm space-y-2 hover:bg-gray-100 transition-transform transform hover:scale-105"
     >
       <img
-        src={store.brandStoreName || "/placeholder-image.png"}
-        alt={store.brandStoreName}
+        src={store.slug || "/placeholder-image.png"}
+        alt={store.slug}
         className="h-16 w-16 object-cover rounded-full"
       />
-      <span className="text-sm font-medium text-gray-700">
-        {store.brandStoreName}
-      </span>
+      <span className="text-sm font-medium text-gray-700">{store.slug}</span>
     </Link>
   );
 };
@@ -74,10 +72,7 @@ const StoresPage: React.FC = () => {
         <div className="py-6 px-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
           {manufacturers.length > 0 ? (
             manufacturers.map((manufacturer: any) => (
-              <StoreCard
-                key={manufacturer.brandStoreName}
-                store={manufacturer}
-              />
+              <StoreCard key={manufacturer.slug} store={manufacturer} />
             ))
           ) : (
             <div className="text-center col-span-full py-12">
