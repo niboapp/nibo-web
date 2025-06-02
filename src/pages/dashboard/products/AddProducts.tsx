@@ -107,7 +107,7 @@ export default function AddProductPage() {
         batchNumber: data.batchNumber,
         manufactureDate: formatDateToISO(data.manufactureDate),
         expiryDate: formatDateToISO(data.expiryDate),
-        manufacturerId: manufacturerId || "cmbfjot3k0001ku0f796dj8c5",
+        manufacturerId: manufacturerId,
       };
 
       await createProduct({
