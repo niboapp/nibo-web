@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ImageUpload from "../../../components/dashboard/ImageUpload";
-import { CREATE_PRODUCT } from "../../../qraphql/mutations";
+import { UPDATE_PRODUCT } from "../../../qraphql/mutations";
+import { GET_PRODUCT } from "../../../qraphql/queries";
 import LeftArrow from "../../../components/ui/LeftArrow";
 import { useManufacturer } from "../../../context/ManufacturerContext";
 import { GET_PRODUCTS } from "../../../qraphql/queries";
@@ -22,20 +23,28 @@ interface ProductFormData {
   manufacturerId: string;
 }
 
-export default function AddProductPage() {
+export default function EditProductPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { productId } = useParams();
   const { manufacturer: manufacturerId } = useManufacturer();
 
-  const [createProduct, { loading: isLoading }] = useMutation(CREATE_PRODUCT, {
+  const { data: productData, loading: loadingProduct } = useQuery(GET_PRODUCT, {
+    variables: {
+      where: { id: productId },
+    },
+    skip: !productId,
+  });
+
+  const [updateProduct, { loading: isLoading }] = useMutation(UPDATE_PRODUCT, {
     onCompleted: () => {
-      toast.success("Your product has been added successfully");
+      toast.success("Product updated successfully");
       navigate("/dashboard/myproducts");
     },
     onError: (error) => {
       toast.error(
-        "Failed to add product. " +
+        "Failed to update product. " +
           (error instanceof Error ? error.message : "")
       );
     },
@@ -62,20 +71,28 @@ export default function AddProductPage() {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<ProductFormData>({
-    defaultValues: {
-      name: "",
-      imageUrl: "",
-      description: "",
-      retailPrice: "",
-      quantity: 0,
-      barCode: "",
-      batchNumber: 0,
-      manufactureDate: "",
-      expiryDate: "",
-      manufacturerId: "",
-    },
-  });
+    reset,
+  } = useForm<ProductFormData>();
+
+  useEffect(() => {
+    if (productData?.product) {
+      const product = productData.product;
+      reset({
+        name: product.name,
+        imageUrl: product.imageUrl,
+        description: product.description,
+        retailPrice: product.retailPrice,
+        quantity: product.quantity,
+        barCode: product.barCode,
+        batchNumber: product.batchNumber,
+        manufactureDate: product.manufactureDate?.split("T")[0],
+        expiryDate: product.expiryDate?.split("T")[0],
+        manufacturerId: product.manufacturerId,
+      });
+      setImagePreview(product.imageUrl);
+      setImageFile(product.imageUrl);
+    }
+  }, [productData, reset]);
 
   const handleImageUploadSuccess = (imageUrl: string) => {
     setImageFile(imageUrl);
@@ -85,7 +102,6 @@ export default function AddProductPage() {
 
   const formatDateToISO = (dateString: string) => {
     if (!dateString) return null;
-    // Create a date object and format it to ISO string
     const date = new Date(dateString);
     return date.toISOString();
   };
@@ -98,6 +114,7 @@ export default function AddProductPage() {
       }
 
       const productInput = {
+        id: productId,
         name: data.name,
         imageUrl: imageFile,
         description: data.description,
@@ -110,15 +127,23 @@ export default function AddProductPage() {
         manufacturerId: manufacturerId,
       };
 
-      await createProduct({
+      await updateProduct({
         variables: {
-          createProductInput: productInput,
+          updateProductInput: productInput,
         },
       });
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error updating product:", error);
     }
   };
+
+  if (loadingProduct) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -131,10 +156,8 @@ export default function AddProductPage() {
           <LeftArrow />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Add New Product</h1>
-          <p className="mt-1 text-gray-600">
-            Fill in the product details below
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
+          <p className="mt-1 text-gray-600">Update the product details below</p>
         </div>
       </div>
 
@@ -254,39 +277,23 @@ export default function AddProductPage() {
 
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
-              Barcode
+              Batch Number
             </label>
             <input
-              {...register("barCode")}
+              type="number"
+              {...register("batchNumber", {
+                required: "Batch number is required",
+                valueAsNumber: true,
+              })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-              placeholder="Enter barcode"
+              placeholder="Enter batch number"
             />
-            {errors.barCode && (
-              <p className="text-red-500 text-sm">{errors.barCode.message}</p>
+            {errors.batchNumber && (
+              <p className="text-red-500 text-sm">
+                {errors.batchNumber.message}
+              </p>
             )}
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Batch Number
-          </label>
-          <input
-            type="number"
-            {...register("batchNumber", {
-              required: "Batch number is required",
-              min: {
-                value: 1,
-                message: "Batch number must be at least 1",
-              },
-              valueAsNumber: true,
-            })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-            placeholder="Enter batch number"
-          />
-          {errors.batchNumber && (
-            <p className="text-red-500 text-sm">{errors.batchNumber.message}</p>
-          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -327,20 +334,36 @@ export default function AddProductPage() {
           </div>
         </div>
 
-        <div className="flex justify-end space-x-3">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Barcode
+          </label>
+          <input
+            {...register("barCode", {
+              required: "Barcode is required",
+            })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+            placeholder="Enter barcode"
+          />
+          {errors.barCode && (
+            <p className="text-red-500 text-sm">{errors.barCode.message}</p>
+          )}
+        </div>
+
+        <div className="flex justify-end space-x-4">
           <button
             type="button"
-            onClick={() => navigate("/dashboard/myproducts")}
-            className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isLoading}
-            className="px-6 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-500"
+            className="px-4 py-2 text-white bg-pink-500 rounded-md hover:bg-pink-600 disabled:opacity-50"
           >
-            {isLoading ? "Loading..." : "Add Product"}
+            {isLoading ? "Updating..." : "Update Product"}
           </button>
         </div>
       </form>

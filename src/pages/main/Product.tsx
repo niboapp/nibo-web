@@ -44,7 +44,7 @@ export default function ProductPage() {
         longitude: location.longitude,
         city: location.city,
       }));
-      setStores(storeLocations.slice(0, 3));
+      setStores(storeLocations);
     }
   }, [locationsData]);
 
