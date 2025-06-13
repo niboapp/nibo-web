@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useMutation } from "@apollo/client";
+import { useMutation, useLazyQuery } from "@apollo/client";
 import { REGISTER_BUSINESS } from "../../qraphql/mutations";
 import { useNavigate } from "react-router-dom";
 import SuccessModal from "../../components/dashboard/business/SuccessModal";
 import { useManufacturer } from "../../context/ManufacturerContext";
 import { toast } from "sonner";
+import { SEARCH_ADDRESS } from "../../qraphql/queries";
 
 interface BusinessFormData {
   businessName: string;
@@ -57,6 +58,27 @@ const BusinessRegistrationForm: React.FC = () => {
   const navigate = useNavigate();
   const [ismodalOpen, setisModalOpen] = useState(false);
   const { saveManufacturer } = useManufacturer();
+  const [addressSuggestions, setAddressSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
+  const [searchAddresses, { loading: searchLoading }] = useLazyQuery(
+    SEARCH_ADDRESS,
+    {
+      context: {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      },
+      onCompleted: (data) => {
+        setAddressSuggestions(data?.searchAddress || []);
+      },
+      onError: () => {
+        setAddressSuggestions([]);
+      },
+    }
+  );
 
   const selectedCategories = watch("productCategory");
 
@@ -109,6 +131,24 @@ const BusinessRegistrationForm: React.FC = () => {
     { value: "CONSUMER_GOODS", label: "Consumer Good" },
     { value: "OTC_PHARMACEUTICALS", label: "OTC Pharmaceuticals" },
   ];
+
+  const handleAddressSearch = (query: string) => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+    if (query.length < 3) {
+      setShowSuggestions(false);
+      return;
+    }
+    const timeout = setTimeout(() => {
+      searchAddresses({ variables: { address: query } });
+      setShowSuggestions(true);
+    }, 300);
+    setSearchTimeout(timeout);
+  };
+
+  const handleAddressSelect = (address: string) => {
+    setValue("fullAddress", address);
+    setShowSuggestions(false);
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-4">
@@ -201,14 +241,48 @@ const BusinessRegistrationForm: React.FC = () => {
           >
             Location
           </label>
-          <input
-            {...register("fullAddress", { required: "Location is required" })}
-            id="location"
-            placeholder="Your Location"
-            className={`w-full px-3 py-2 border ${
-              errors.fullAddress ? "border-red-500" : "border-gray-200"
-            } rounded-md focus:outline-none focus:ring-1 focus:ring-bg-active`}
-          />
+          <div className="relative">
+            <input
+              {...register("fullAddress", { required: "Location is required" })}
+              id="location"
+              placeholder="Your Location"
+              className={`w-full px-3 py-2 border ${
+                errors.fullAddress ? "border-red-500" : "border-gray-200"
+              } rounded-md focus:outline-none focus:ring-1 focus:ring-bg-active`}
+              onChange={(e) => {
+                handleAddressSearch(e.target.value);
+                register("fullAddress").onChange(e);
+              }}
+              autoComplete="off"
+            />
+            <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+              {searchLoading ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-500"></div>
+              ) : null}
+            </div>
+            {showSuggestions && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto z-50">
+                {addressSuggestions.length > 0
+                  ? addressSuggestions.map((suggestion, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        className="w-full text-left px-3 py-2 hover:bg-pink-100 transition-colors duration-150 flex items-start space-x-2"
+                        onClick={() => handleAddressSelect(suggestion)}
+                      >
+                        <span className="text-sm text-gray-700 line-clamp-2">
+                          {suggestion}
+                        </span>
+                      </button>
+                    ))
+                  : !searchLoading && (
+                      <div className="px-3 py-2 text-sm text-gray-500 text-center">
+                        No addresses found
+                      </div>
+                    )}
+              </div>
+            )}
+          </div>
           {errors.fullAddress && (
             <p className="text-red-500 text-xs mt-1">
               {errors.fullAddress.message}

@@ -64,15 +64,21 @@ export const GET_LOCATIONS = gql`
 `;
 
 export const GET_PRODUCT = gql`
-  query Query($where: ProductWhereUniqueInput!) {
+  query GetProduct($where: ProductWhereUniqueInput!) {
     product(where: $where) {
+      id
       name
+      description
+      retailPrice
+      batchNumber
+      barCode
       imageUrl
-      product {
-        productCategory
-      }
-      createdAt
+      manufacturerId
+      manufactureDate
+      expiryDate
       quantity
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -80,5 +86,21 @@ export const GET_PRODUCT = gql`
 export const SEARCH_ADDRESS = gql`
   query SearchAddress($address: String!) {
     searchAddress(address: $address)
+  }
+`;
+
+export const GET_MANUFACTURER = gql`
+  query GetManufacturer($id: String!) {
+    manufacturer(where: { id: $id }) {
+      id
+      businessName
+      brandStoreName
+      location {
+        fullAddress
+      }
+      industry
+      productCategory
+      slug
+    }
   }
 `;

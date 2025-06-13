@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_RETAILERS } from "../../../qraphql/queries";
 import LoadingSpinner from "../../../components/LoadingSpinner";
@@ -24,7 +24,26 @@ const RetailersList: React.FC = () => {
     },
     skip: !manufacturer,
   });
-  console.log(data, "data");
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setActiveDropdown(null);
+      }
+    };
+    if (activeDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [activeDropdown]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
@@ -123,14 +142,43 @@ const RetailersList: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      className="text-gray-400 hover:text-gray-900"
-                      onClick={() => {
-                        // Add action menu logic here
-                      }}
+                    <div
+                      className="relative"
+                      ref={activeDropdown === store.id ? dropdownRef : null}
                     >
-                      <MoreVertical size={20} />
-                    </button>
+                      <button
+                        className="text-gray-400 hover:text-gray-900 p-2 rounded-md"
+                        onClick={() =>
+                          setActiveDropdown(
+                            activeDropdown === store.id ? null : store.id
+                          )
+                        }
+                      >
+                        <MoreVertical size={20} />
+                      </button>
+                      {activeDropdown === store.id && (
+                        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                          <button
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => {
+                              setActiveDropdown(
+                                null
+                              ); /* TODO: View details logic */
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                            onClick={() => {
+                              setActiveDropdown(null); /* TODO: Delete logic */
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -17,6 +17,7 @@ import MyProductsTable from "./pages/dashboard/products/MyProducts";
 import AccountPage from "./pages/main/account/Account";
 import Orders from "./pages/main/account/Orders";
 import AddProductPage from "./pages/dashboard/products/AddProducts";
+import EditProductPage from "./pages/dashboard/products/EditProduct";
 import AuthPage from "./pages/auth/Welcome";
 import CreateAccount from "./pages/auth/SignUpPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -52,7 +53,6 @@ export const router = createBrowserRouter([
   // Protected routes
   {
     path: "dashboard",
-
     element: <DashboardLayout />,
     children: [
       { path: "main", element: <Dashboard /> },
@@ -61,6 +61,7 @@ export const router = createBrowserRouter([
       { path: "retailers", element: <RetailersList /> },
       { path: "add-retailer", element: <AddRetailerForm /> },
       { path: "add-product", element: <AddProductPage /> },
+      { path: "edit-product/:productId", element: <EditProductPage /> },
       { path: "add-business", element: <BusinessRegistrationForm /> },
       { path: "add-retailer-csv", element: <AddRetailerCSV /> },
     ],

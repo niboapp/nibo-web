@@ -4,7 +4,7 @@ import Product from "../types/product";
 import { ProductCard } from "./ProductCard";
 import { useCart } from "../context/CartContext";
 import { Heart } from "lucide-react";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import LoadingSpinner from "./LoadingSpinner";
 
 // GraphQL query for product details
@@ -139,7 +139,6 @@ export const ProductDetails: React.FC = () => {
 
       {/* CTA Buttons */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t flex gap-3 max-w-lg mx-auto">
-        <Toaster />
         <button
           onClick={() => {
             addItem(product);

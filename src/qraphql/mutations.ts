@@ -86,6 +86,35 @@ export const REGISTER_BUSINESS = gql`
   }
 `;
 
+export const UPDATE_PRODUCT = gql`
+  mutation UpdateProduct($updateProductInput: UpdateProductInput!) {
+    updateProduct(updateProductInput: $updateProductInput) {
+      id
+      name
+      description
+      retailPrice
+      batchNumber
+      barCode
+      imageUrl
+      manufacturerId
+      manufactureDate
+      expiryDate
+      quantity
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const REMOVE_PRODUCT = gql`
+  mutation RemoveProduct($where: ProductWhereUniqueInput!) {
+    removeProduct(where: $where) {
+      name
+      quantity
+    }
+  }
+`;
+
 export interface CreateStoreInput {
   name: string;
   manufacturerId: string;
