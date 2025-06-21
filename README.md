@@ -1,5 +1,6 @@
 
 # ![Logo](https://nibo.ng/favicon.ico)  NIBO 
+_NIBO_:  [site](https://nibo.ng)
 
 Nibo is a web-based platform that allows wholesalers to list their products and specify the stores where these products are available, making it easy for users to discover product availability across various locations.
 
