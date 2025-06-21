@@ -6,7 +6,7 @@ Nibo is a web-based platform that allows wholesalers to list their products and 
 
 ## Documentation
 
-[Documentation](https://linktodocumentation)
+[Documentation]([https://linktodocumentation](https://docs.google.com/document/d/1VWgG1aWRDhb7bO6rpGiNPHzLuRABWNfrR47hGn6wiec))
 
 
 ## Run Locally
