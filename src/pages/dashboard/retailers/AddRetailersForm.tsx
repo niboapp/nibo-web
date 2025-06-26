@@ -48,7 +48,6 @@ const AddRetailerForm = () => {
       },
       onCompleted: (data) => {
         setAddressSuggestions(data?.searchAddress || []);
-        console.log("Address suggestions:", addressSuggestions);
       },
       onError: (error) => {
         console.error(error);
@@ -175,13 +174,11 @@ const AddRetailerForm = () => {
         manufacturerId,
       }));
 
-      const { data } = await addRetailers({
+      await addRetailers({
         variables: {
           createStoreInputs,
         },
       });
-
-      console.log("Retailers added successfully:", data);
       toast.success("Retailers added successfully!");
       navigate("/dashboard/retailers");
     } catch (error) {
