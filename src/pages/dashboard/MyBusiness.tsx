@@ -384,7 +384,7 @@ const BusinessRegistrationForm: React.FC = () => {
       {/* Successful Business Registration Modal */}
       {ismodalOpen && (
         <SuccessModal
-          onClose={() => navigate("/dashboard/main")}
+          onClose={() => navigate("/dashboard/myproducts")}
           onAddProduct={() => navigate("/dashboard/add-product")}
         />
       )}

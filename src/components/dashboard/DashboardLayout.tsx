@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Package, User, Plus, LogOut } from "lucide-react";
+import { Package, User, Plus, LogOut } from "lucide-react";
 import Button from "../ui/Button";
 import { authService } from "../../api/auth";
 
@@ -21,7 +21,7 @@ export const DashboardLayout: React.FC = () => {
         {/* Navigation */}
         <nav className="flex-1 w-full mt-8 px-7">
           <ul className="space-y-4 w-full">
-            <li>
+            {/* <li>
               <NavLink
                 to="/dashboard/main"
                 className={({ isActive }) =>
@@ -35,7 +35,7 @@ export const DashboardLayout: React.FC = () => {
                 <LayoutDashboard size={20} className="mr-3" />
                 <span className="text-base">Dashboard</span>
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink
                 to="/dashboard/myproducts"

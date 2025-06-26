@@ -11,7 +11,7 @@ import { ProductDetails } from "./components/ProductDetails";
 import ErrorPage from "./pages/ErrorPage";
 import ProductList from "./pages/main/ProductList";
 import LoginForm from "./pages/auth/LoginPage";
-import Dashboard from "./pages/dashboard/Dashboard";
+// import Dashboard from "./pages/dashboard/Dashboard";
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import MyProductsTable from "./pages/dashboard/products/MyProducts";
 import AccountPage from "./pages/main/account/Account";
@@ -55,7 +55,6 @@ export const router = createBrowserRouter([
     path: "dashboard",
     element: <DashboardLayout />,
     children: [
-      { path: "main", element: <Dashboard /> },
       { path: "myproducts", element: <MyProductsTable /> },
       { path: "account", element: <MyAccount /> },
       { path: "retailers", element: <RetailersList /> },
