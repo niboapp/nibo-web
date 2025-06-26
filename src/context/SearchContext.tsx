@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode } from "react";
 
 interface SearchContextType {
   searchTerm: string;
@@ -8,17 +8,15 @@ interface SearchContextType {
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
-export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+export const SearchProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearch = () => {
-    // This function will be called when the search is triggered
-    // You can add any additional logic here if needed
-    console.log('Searching for:', searchTerm);
-  };
+  const handleSearch = () => {};
 
   return (
-    <SearchContext.Provider value={{ searchTerm, setSearchTerm, handleSearch}}>
+    <SearchContext.Provider value={{ searchTerm, setSearchTerm, handleSearch }}>
       {children}
     </SearchContext.Provider>
   );
@@ -28,7 +26,7 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 export const useSearch = () => {
   const context = useContext(SearchContext);
   if (context === undefined) {
-    throw new Error('useSearch must be used within a SearchProvider');
+    throw new Error("useSearch must be used within a SearchProvider");
   }
   return context;
 };

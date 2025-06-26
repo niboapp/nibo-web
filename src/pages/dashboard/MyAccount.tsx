@@ -59,8 +59,11 @@ export default function MyAccount() {
     <div className="max-w-2xl mx-auto bg-white rounded-lg shadow p-8 mt-8">
       <div className="flex items-center gap-4 mb-8">
         <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl font-bold text-bg-active">
-          {/* Placeholder for business image */}
-          {business.brandStoreName?.[0] || "B"}
+          <img
+            src={business.brandImage}
+            alt={business.brandStoreName}
+            className="w-16 h-16 rounded-full"
+          />
         </div>
         <div>
           <h2 className="text-xl font-semibold text-gray-900">
