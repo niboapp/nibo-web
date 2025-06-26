@@ -15,7 +15,7 @@ const StoreCard = ({ store }: { store: any }) => {
       className="flex flex-col items-center p-4 bg-gray-50 rounded-lg shadow-sm space-y-2 hover:bg-gray-100 transition-transform transform hover:scale-105"
     >
       <img
-        src={store.slug || "/placeholder-image.png"}
+        src={store.brandImage}
         alt={store.slug}
         className="h-16 w-16 object-cover rounded-full"
       />
@@ -34,17 +34,6 @@ const StoresPage: React.FC = () => {
       </div>
     );
   }
-
-  // if (error) {
-  //   return (
-  //     <div className="text-center py-12">
-  //       <h3 className="text-lg font-medium text-red-600 mb-2">
-  //         Failed to load stores
-  //       </h3>
-  //       <p className="text-gray-600">Please try again later.</p>
-  //     </div>
-  //   );
-  // }
 
   const manufacturers = data?.manufacturers || [];
 
