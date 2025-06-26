@@ -1,29 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import Store from "../../types/stores";
 import MapComponent, { UserLocation } from "../../components/MapComponent";
-import { Link, useParams } from "react-router-dom";
-import Button from "../../components/ui/Button";
-import { GET_LOCATIONS, GET_PRODUCT } from "../../qraphql/queries";
+import { useNavigate, useParams } from "react-router-dom";
+import { GET_PRODUCT, GET_STORE } from "../../qraphql/queries";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
-  const [stores, setStores] = useState<Store[]>([]);
+  const navigate = useNavigate();
   const [userLocation, setUserLocation] = useState<UserLocation>({
     latitude: 0,
     longitude: 0,
   });
 
-  // Fetch locations
-  const {
-    data: locationsData,
-    loading: locationsLoading,
-    error: locationsError,
-  } = useQuery(GET_LOCATIONS);
-
-  // Fetch product
+  // Fetch product first
   const {
     data: productData,
     loading: productLoading,
@@ -35,18 +26,21 @@ export default function ProductPage() {
     skip: !id,
   });
 
-  useEffect(() => {
-    if (locationsData?.locations) {
-      const storeLocations = locationsData.locations.map((location: any) => ({
-        id: location.id,
-        name: `Store ${location.id}`,
-        latitude: location.latitude,
-        longitude: location.longitude,
-        city: location.city,
-      }));
-      setStores(storeLocations);
-    }
-  }, [locationsData]);
+  // Fetch locations after productData is available
+  const {
+    data: storeData,
+    loading: locationsLoading,
+    error: locationsError,
+  } = useQuery(GET_STORE, {
+    variables: {
+      where: {
+        manufacturerId: {
+          equals: productData?.product?.manufacturerId || null,
+        },
+      },
+    },
+    skip: !productData?.product?.manufacturerId,
+  });
 
   // Get user's location
   useEffect(() => {
@@ -90,7 +84,6 @@ export default function ProductPage() {
   }
 
   const product = productData?.product;
-
   if (!product) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -102,7 +95,7 @@ export default function ProductPage() {
   return (
     <div className="flex flex-col h-screen bg-white">
       <div className="px-4 h-14 py-4 flex items-center justify-between border-b">
-        <Link to="/" className="text-gray-600">
+        <button onClick={() => navigate(-1)} className="text-gray-600">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -117,8 +110,8 @@ export default function ProductPage() {
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             />
           </svg>
-        </Link>
-        <h1 className="text-base font-medium">Products</h1>
+        </button>
+        <h1 className="text-base font-medium">{product.name}</h1>
         <button className="text-gray-600">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -138,9 +131,12 @@ export default function ProductPage() {
       </div>
 
       <div className="flex-1 flex flex-col">
-        {stores.length > 0 && (
+        {storeData?.stores.length > 0 && (
           <div className="flex-1">
-            <MapComponent userLocation={userLocation} Stores={stores} />
+            <MapComponent
+              userLocation={userLocation}
+              Stores={storeData?.stores}
+            />
           </div>
         )}
 
@@ -158,7 +154,7 @@ export default function ProductPage() {
               <h2 className="text-lg font-semibold">{product.name}</h2>
               <p className="text-sm text-gray-500">{product.category}</p>
               <p className="text-sm text-gray-500">
-                Batch Quantity: {product.batchQuantity}
+                Retail Price: {product?.retailPrice}
               </p>
               <p className="text-sm text-gray-500">
                 Created: {new Date(product.createdAt).toLocaleDateString()}
@@ -166,12 +162,14 @@ export default function ProductPage() {
             </div>
           </div>
 
-          <div className="mt-1 pl-32">
-            <Link to={`/productdetail/${id}`}>
-              <Button className="w-3/4 bg-bg-active text-white h-12 rounded-md hover:bg-pink-600">
-                Buy Online
-              </Button>
-            </Link>
+          <div className="mt-1 pl-32 w-full flex justify-center">
+            <a
+              className="w-3/4 bg-bg-active text-white h-12 rounded-md hover:bg-pink-600 flex items-center justify-center"
+              href={`https://wa.me/${product.product.stores[0].contact}`}
+              target="_blank"
+            >
+              Buy Online
+            </a>
           </div>
         </div>
       </div>
