@@ -22,6 +22,7 @@ export const GET_STORE_PRODUCTS = gql`
       retailPrice
       product {
         productCategory
+        brandImage
       }
       quantity
       description
@@ -33,6 +34,7 @@ export const GET_RETAILERS = gql`
   query Locations($id: String!) {
     manufacturer(where: { id: $id }) {
       stores {
+        id
         name
         contact
         location {
@@ -49,16 +51,33 @@ export const MANUFACTURER_QUERY = gql`
     manufacturers {
       brandStoreName
       slug
+      brandImage
     }
   }
 `;
 
 export const GET_LOCATIONS = gql`
-  query Locations {
-    locations {
+  query Locations($where: LocationWhereInput) {
+    locations(where: $where) {
+      id
       latitude
       longitude
-      id
+      fullAddress
+    }
+  }
+`;
+
+export const GET_STORE = gql`
+  query Store($where: StoreWhereInput) {
+    stores(where: $where) {
+      location {
+        id
+        latitude
+        longitude
+        fullAddress
+      }
+      name
+      contact
     }
   }
 `;
@@ -79,6 +98,11 @@ export const GET_PRODUCT = gql`
       quantity
       createdAt
       updatedAt
+      product {
+        stores {
+          contact
+        }
+      }
     }
   }
 `;
@@ -95,6 +119,7 @@ export const GET_MANUFACTURER = gql`
       id
       businessName
       brandStoreName
+      brandImage
       location {
         fullAddress
       }

@@ -82,6 +82,7 @@ export const REGISTER_BUSINESS = gql`
         id
       }
       industry
+      brandImage
     }
   }
 `;

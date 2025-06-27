@@ -11,7 +11,7 @@ import { ProductDetails } from "./components/ProductDetails";
 import ErrorPage from "./pages/ErrorPage";
 import ProductList from "./pages/main/ProductList";
 import LoginForm from "./pages/auth/LoginPage";
-import Dashboard from "./pages/dashboard/Dashboard";
+// import Dashboard from "./pages/dashboard/Dashboard";
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import MyProductsTable from "./pages/dashboard/products/MyProducts";
 import AccountPage from "./pages/main/account/Account";
@@ -29,10 +29,13 @@ import BusinessRegistrationForm from "./pages/dashboard/MyBusiness";
 import AddRetailerCSV from "./pages/dashboard/retailers/AddRetailerCSV";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RetailersList from "./pages/dashboard/retailers/RetailersList";
+import RootRedirect from "./components/RootRedirect";
 
 export const router = createBrowserRouter([
+  // Root route with authentication check
+  { path: "/", element: <RootRedirect />, errorElement: <ErrorPage /> },
+
   // Public routes
-  { path: "/", element: <StoresPage />, errorElement: <ErrorPage /> },
   { path: "help", element: <Help /> },
   { path: "cart", element: <Cart /> },
   { path: "categories", element: <Categories /> },
@@ -55,7 +58,6 @@ export const router = createBrowserRouter([
     path: "dashboard",
     element: <DashboardLayout />,
     children: [
-      { path: "main", element: <Dashboard /> },
       { path: "myproducts", element: <MyProductsTable /> },
       { path: "account", element: <MyAccount /> },
       { path: "retailers", element: <RetailersList /> },

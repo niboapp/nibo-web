@@ -2,7 +2,7 @@ import { NavLink, Link, useParams } from "react-router-dom";
 import { ProductCard } from "../../components/ProductCard";
 import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import { useSearch } from "../../context/SearchContext";
-import { Heart, ShoppingBag, Search, ArrowLeft, Store } from "lucide-react";
+import { ShoppingBag, Search, ArrowLeft, Store } from "lucide-react";
 import { useQuery } from "@apollo/client";
 import Product from "../../types/product";
 import { GET_STORE_PRODUCTS } from "../../qraphql/queries";
@@ -134,8 +134,6 @@ export const StoreDetails: React.FC = () => {
             />
             <FaSearch className="absolute right-3 top-2 text-gray-900" />
           </div>
-
-          {/* Cart Icon */}
           <div className="text-2xl cursor-pointer">
             <NavLink to="/cart">
               <FaShoppingCart />
@@ -150,87 +148,82 @@ export const StoreDetails: React.FC = () => {
   const products = data.products;
   const storeNameDisplay = storeName || "Store";
 
+  // ✅ Filter products based on searchTerm
+  const filteredProducts = products.filter((product: Product) =>
+    product?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-gray-900">
-      <nav className="flex items-center justify-between p-4 bg-bg-primary text-gray-900">
+      {/* Top nav */}
+      <nav className="flex items-center justify-between p-4 bg-bg-primary">
         <div className="text-2xl font-bold">
-          <Link to={"/"}>
+          <Link to="/">
             n<span className="text-bg-active">i</span>bo
             <span className="text-bg-active">.</span>
           </Link>
         </div>
-        <div className="relative flex-grow mx-4 md:mx-10 lg:mx-20">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search"
-            className="w-full p-2 pl-4 rounded-md outline-none text-black"
-          />
-          <FaSearch className="absolute right-3 top-2 text-gray-900" />
-        </div>
-
         <div className="text-2xl cursor-pointer">
           <NavLink to="/cart">
             <FaShoppingCart />
           </NavLink>
         </div>
       </nav>
-      <div className="flex flex-col">
-        <div className="p-6 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-              <span className="text-xl font-semibold text-gray-800">
-                {storeNameDisplay[0]}
-              </span>
-            </div>
-            <div>
-              <p className="text-lg font-semibold text-gray-900">
-                {storeNameDisplay}
-              </p>
-              <p className="text-sm text-gray-500">Store</p>
-            </div>
-          </div>
 
-          <div className="text-center">
-            <p className="text-lg font-semibold text-gray-900">
-              {products.length}
-            </p>
-            <p className="text-sm text-gray-500">Products</p>
+      {/* Store Info */}
+      <div className="p-6 flex items-center justify-between border-b">
+        <div className="flex items-center space-x-4">
+          <div className="w-16 h-16 bg-gray-100 rounded-full overflow-hidden">
+            <img
+              src={data?.products[0]?.product?.brandImage}
+              alt={storeNameDisplay}
+              className="w-full h-full object-cover"
+            />
           </div>
-
-          <div className="text-center">
-            <p className="text-lg font-semibold text-gray-900">4.8</p>
-            <p className="text-sm text-gray-500">Rating</p>
+          <div>
+            <p className="text-lg font-semibold">{storeNameDisplay}</p>
+            <p className="text-sm text-gray-500">Store</p>
           </div>
         </div>
-        <div className="flex items-center justify-center">
-          <button className="flex bg-bg-active px-3 py-2 rounded-md text-bg-primary gap-2">
-            Follow store <Heart />
-          </button>
-        </div>
-        <div className="w-full p-3 rounded-lg">
-          <img
-            src={"/promo1.jpg"}
-            className="w-full rounded-lg h-28 object-cover lg:h-60"
-          />
+        <div className="text-right">
+          <p className="text-lg font-semibold">{products.length}</p>
+          <p className="text-sm text-gray-500">Products</p>
         </div>
       </div>
 
       {/* Tab Section */}
-      <div className="flex justify-around mt-4 border-b">
-        <button className="pb-2 border-b-4 border-pink-500 text-pink-500 font-semibold">
+      <div className="flex justify-start space-x-6 mt-4 px-6 border-b">
+        <button className="pb-2 border-b-2 border-pink-500 text-pink-500 font-semibold">
           Products
         </button>
         <button className="pb-2 text-gray-500 font-semibold">Categories</button>
         <button className="pb-2 text-gray-500 font-semibold">Reviews</button>
       </div>
 
-      {/* Store Products */}
-      <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3 lg:grid-cols-4">
-        {products.map((product: Product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+      {/* Search and Filtered Products */}
+      <div className="px-4 mt-4">
+        <div className="relative w-full mb-4">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search"
+            className="w-full p-2 pl-4 rounded-md border outline-none text-black"
+          />
+          <FaSearch className="absolute right-3 top-2.5 text-gray-600" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product: Product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <p className="col-span-full text-center text-gray-500">
+              No products match your search.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

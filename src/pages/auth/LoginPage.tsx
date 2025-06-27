@@ -27,7 +27,7 @@ const LoginForm: React.FC = () => {
         localStorage.removeItem("userId");
         localStorage.setItem("userId", data.logIn.user.id);
         saveManufacturer(data?.logIn?.user?.manufacturers[0].id || "");
-        navigate("/dashboard/main");
+        navigate("/dashboard/myproducts");
         toast("Successfully logged in");
       }
     },

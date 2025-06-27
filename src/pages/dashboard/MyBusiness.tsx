@@ -7,6 +7,7 @@ import SuccessModal from "../../components/dashboard/business/SuccessModal";
 import { useManufacturer } from "../../context/ManufacturerContext";
 import { toast } from "sonner";
 import { SEARCH_ADDRESS } from "../../qraphql/queries";
+import ImageUpload from "../../components/dashboard/ImageUpload";
 
 interface BusinessFormData {
   businessName: string;
@@ -14,6 +15,7 @@ interface BusinessFormData {
   fullAddress: string;
   industry: string;
   productCategory: string[];
+  brandImage: string;
 }
 
 const defaultValues: BusinessFormData = {
@@ -22,6 +24,7 @@ const defaultValues: BusinessFormData = {
   fullAddress: "",
   industry: "",
   productCategory: [],
+  brandImage: "",
 };
 
 const categoryOptions = [
@@ -95,7 +98,6 @@ const BusinessRegistrationForm: React.FC = () => {
     {
       onCompleted: (data) => {
         toast("Your business has been created successfully ");
-        console.log(data);
         saveManufacturer(data?.createManufacturer?.id);
         setisModalOpen(true);
         reset(defaultValues);
@@ -113,7 +115,6 @@ const BusinessRegistrationForm: React.FC = () => {
 
   const onSubmit = (data: BusinessFormData) => {
     const id = localStorage.getItem("userId");
-    console.log("Form submitted:", data);
     registerBusiness({
       variables: {
         createManufacturerInput: { ...data, ownerId: id },
@@ -209,7 +210,13 @@ const BusinessRegistrationForm: React.FC = () => {
             </p>
           )}
         </div>
-
+        <div className="mb-4">
+          <ImageUpload
+            onUploadSuccess={(url) => {
+              setValue("brandImage", url);
+            }}
+          />
+        </div>
         <div className="mb-4">
           <label
             htmlFor="brandStoreName"
@@ -377,7 +384,7 @@ const BusinessRegistrationForm: React.FC = () => {
       {/* Successful Business Registration Modal */}
       {ismodalOpen && (
         <SuccessModal
-          onClose={() => navigate("/dashboard/main")}
+          onClose={() => navigate("/dashboard/myproducts")}
           onAddProduct={() => navigate("/dashboard/add-product")}
         />
       )}
