@@ -29,10 +29,13 @@ import BusinessRegistrationForm from "./pages/dashboard/MyBusiness";
 import AddRetailerCSV from "./pages/dashboard/retailers/AddRetailerCSV";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RetailersList from "./pages/dashboard/retailers/RetailersList";
+import RootRedirect from "./components/RootRedirect";
 
 export const router = createBrowserRouter([
+  // Root route with authentication check
+  { path: "/", element: <RootRedirect />, errorElement: <ErrorPage /> },
+
   // Public routes
-  { path: "/", element: <StoresPage />, errorElement: <ErrorPage /> },
   { path: "help", element: <Help /> },
   { path: "cart", element: <Cart /> },
   { path: "categories", element: <Categories /> },
