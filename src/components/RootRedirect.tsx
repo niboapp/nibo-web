@@ -9,7 +9,7 @@ const RootRedirect = () => {
   }
 
   // If authenticated, redirect to stores page (or dashboard if they're a manufacturer)
-  return <Navigate to="/myproducts" replace />;
+  return <Navigate to="/dashboard/myproducts" replace />;
 };
 
 export default RootRedirect;
