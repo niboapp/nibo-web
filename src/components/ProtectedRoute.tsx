@@ -5,7 +5,7 @@ const ProtectedRoute = () => {
   const isAuthenticated = authService.getToken();
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/signup" replace />;
   }
 
   return <Outlet />;
