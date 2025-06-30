@@ -20,7 +20,7 @@ import { Toaster } from "sonner";
 const httpLink = createHttpLink({
   uri: import.meta.env.VITE_BASE_API_URL
     ? `${import.meta.env.VITE_BASE_API_URL}/graphql`
-    : "https://nibo-api.onrender.com/graphql",
+    : "https://api.nibo.ng/graphql",
 });
 
 const client = new ApolloClient({
